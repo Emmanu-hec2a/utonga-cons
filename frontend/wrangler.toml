@@ -1,5 +1,8 @@
 name = "utonga-cons"
-pages_build_output_dir = "dist"
+compatibility_date = "2024-03-05"
+
+[assets]
+directory = "./dist"
 
 [vars]
 # The base URL for your deployed Django backend

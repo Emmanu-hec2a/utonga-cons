@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --color-utonga-green: #6E8F4E;
+  --color-utonga-accent: #FFD700; /* REINSTATED ORIGINAL BRAND YELLOW */
+  --color-utonga-dark: #12150E;
+
+  --color-canopy: #12150E;
+  --color-bark: #23271A;
+  --color-blaze-yellow: #FFD700; /* USING ORIGINAL BRAND YELLOW */
+  --color-fern: #6E8F4E;
+  --color-paper: #E7E2D3;
+  --color-mist: #9BA192;
+
+  --font-display: "Bree Serif", serif;
+  --font-meta: "Space Mono", monospace;
+  --font-body: "Inter", sans-serif;
+
+  --background-image-hero-gradient: linear-gradient(to top, rgba(18,21,14,0.95) 0%, rgba(18,21,14,0.6) 35%, rgba(18,21,14,0) 65%);
+}
+
+@layer base {
+  @import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;700&display=swap');
+
+  body {
+    @apply bg-canopy text-paper font-body;
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+.trail-line {
+  stroke: var(--color-bark);
+  stroke-width: 3;
+  stroke-dasharray: 6 6;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trail-line.done {
+  stroke: var(--color-fern);
+  stroke-dasharray: none;
+}
+
+.trail-line.in-progress {
+  stroke: var(--color-utonga-accent);
+  stroke-dasharray: none;
+}

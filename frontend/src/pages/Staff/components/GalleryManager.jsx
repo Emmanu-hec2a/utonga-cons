@@ -39,50 +39,50 @@ const GalleryManager = () => {
   };
 
   return (
-    <div className="space-y-8 relative">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 relative">
+      <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-black">Media Gallery</h1>
-          <p className="text-gray-500 mt-1 font-medium">Upload and organize sanctuary photography for production.</p>
+          <h1 className="text-2xl font-black">Media Assets</h1>
+          <p className="text-gray-500 text-xs mt-1 font-medium uppercase tracking-wider">Sanctuary photography and production media.</p>
         </div>
         <button
           onClick={() => setIsUploadOpen(true)}
-          className="flex items-center bg-utonga-green text-white px-8 py-4 rounded-2xl font-black hover:bg-opacity-90 transition-all text-sm shadow-xl shadow-utonga-green/20"
+          className="flex items-center bg-utonga-green text-white px-5 py-2.5 rounded-lg font-black hover:bg-opacity-90 transition-all text-[10px] uppercase tracking-widest shadow-lg shadow-utonga-green/20 cursor-pointer"
         >
-          <Upload size={18} className="mr-3" /> Upload New Photo
+          <Upload size={14} className="mr-2" /> Upload Asset
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
         {loading ? (
-          <div className="col-span-full text-center py-20 text-gray-500 italic">Accessing media assets...</div>
+          <div className="col-span-full text-center py-20 text-gray-500 italic uppercase tracking-widest text-[10px] font-black">Accessing vault...</div>
         ) : images.length > 0 ? images.map((img) => (
-          <div key={img.id} className="group bg-gray-900 border border-gray-800 rounded-3xl overflow-hidden hover:border-utonga-accent transition-all">
+          <div key={img.id} className="group bg-gray-900 rounded-xl overflow-hidden hover:bg-gray-800/50 transition-all shadow-lg">
             <div className="relative aspect-square bg-black overflow-hidden">
               <img
                 src={img.image_url || img.image || `https://r2-placeholder.com/${img.image_key}`}
                 alt={img.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
-              <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="p-3 bg-black/80 backdrop-blur-md rounded-xl text-white hover:text-utonga-accent"><Edit2 size={16} /></button>
+              <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button className="p-2 bg-black/80 backdrop-blur-md rounded-lg text-white hover:text-utonga-accent transition-colors cursor-pointer"><Edit2 size={12} /></button>
                 <button
                   onClick={() => handleDelete(img.id)}
-                  className="p-3 bg-black/80 backdrop-blur-md rounded-xl text-white hover:text-red-500"
+                  className="p-2 bg-black/80 backdrop-blur-md rounded-lg text-white hover:text-red-500 transition-colors cursor-pointer"
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={12} />
                 </button>
               </div>
             </div>
-            <div className="p-6">
-              <span className="text-[10px] font-black uppercase tracking-widest text-utonga-accent">{img.category}</span>
-              <h4 className="text-sm font-bold text-white mt-1 line-clamp-1">{img.title}</h4>
+            <div className="p-3">
+              <span className="text-[8px] font-black uppercase tracking-[0.15em] text-utonga-accent leading-none">{img.category}</span>
+              <h4 className="text-[10px] font-bold text-gray-200 mt-1 line-clamp-1 leading-tight">{img.title}</h4>
             </div>
           </div>
         )) : (
-          <div className="col-span-full py-24 bg-gray-900 border border-gray-800 border-dashed rounded-[3rem] text-center">
-            <ImageIcon size={64} className="mx-auto text-gray-800 mb-6" />
-            <p className="text-gray-500 font-bold max-w-xs mx-auto">Your sanctuary gallery is currently empty. Start uploading photos to build your brand.</p>
+          <div className="col-span-full py-16 bg-gray-900 border border-gray-800 border-dashed rounded-2xl text-center">
+            <ImageIcon size={32} className="mx-auto text-gray-800 mb-4" />
+            <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest">Gallery vault empty.</p>
           </div>
         )}
       </div>

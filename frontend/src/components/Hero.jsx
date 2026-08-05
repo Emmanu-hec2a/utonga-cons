@@ -8,22 +8,25 @@ const images = [
     alt: 'Lush indigenous tropical forest at sunrise in Utonga'
   },
   {
-    url: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop',
+    url: 'https://images.unsplash.com/photo-1496080174650-637e3f22fa03?q=80&w=2000&auto=format&fit=crop',
+    alt: 'Solitary camp tent under a sunset sky in the Sitatunga conservation area'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1484406566174-9da000fda645?q=80&w=2000&auto=format&fit=crop',
+    alt: 'Scenic view of Brown Deer during the golden hour'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1751561484224-71ecfb3086d9?q=80&w=2000&auto=format&fit=crop',
     alt: 'Serene wetland sanctuary on the shores of Lake Victoria'
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1544198365-f5d60b6d8190?q=80&w=2070&auto=format&fit=crop',
-    alt: 'Scenic view of Hippo Point during the golden hour'
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?q=80&w=2070&auto=format&fit=crop',
-    alt: 'Panoramic sunset view over the Sitatunga conservation area'
   }
 ];
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [typedText, setTypedText] = useState('');
+  const [showCursor, setShowCursor] = useState(true);
+  const fullText = 'Sitatunga.';
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % images.length);
@@ -35,9 +38,24 @@ const Hero = () => {
 
   useEffect(() => {
     if (isPaused) return;
-    const interval = setInterval(nextSlide, 6000);
+    const interval = setInterval(nextSlide, 3000);
     return () => clearInterval(interval);
   }, [nextSlide, isPaused]);
+
+  useEffect(() => {
+    let i = 0;
+    setTypedText('');
+    setShowCursor(true);
+    const timer = setInterval(() => {
+      setTypedText(fullText.slice(0, i + 1));
+      i++;
+      if (i >= fullText.length) {
+        clearInterval(timer);
+        setTimeout(() => setShowCursor(false), 1000); // Hide cursor shortly after finishing
+      }
+    }, 150);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <div
@@ -71,9 +89,14 @@ const Hero = () => {
       {/* Fixed Content Overlay */}
       <div className="relative z-20 flex flex-col justify-center h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
         <div className="max-w-3xl">
-          <h1 className="text-4xl md:text-7xl font-bold tracking-tight mb-4">
-            Restoring the Heart of <br/>
-            <span className="text-utonga-accent text-5xl md:text-8xl">Sitatunga.</span>
+          <h1 className="text-4xl md:text-7xl font-bold tracking-tight mb-4" aria-label={`Restoring the Heart of ${fullText}`}>
+            Restoring the Heart&nbsp;of <br className="hidden md:block" />
+            <span className="text-utonga-accent text-5xl md:text-8xl inline-flex items-center" aria-hidden="true">
+              {typedText}
+              {showCursor && (
+                <span className="w-[4px] h-[0.8em] bg-utonga-accent ml-2 animate-pulse" />
+              )}
+            </span>
           </h1>
           <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl leading-relaxed">
             Indigenous tropical forest, wetland sanctuaries, and the future of Lake Victoria's biodiversity. $1 = 1 tree planted.

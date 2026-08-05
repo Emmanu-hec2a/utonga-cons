@@ -9,20 +9,20 @@ const StatsRow = ({ raised, goal, trees, days }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Progress Tracker Block */}
-        <div className="mb-16 md:mb-20">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
+        <div className="mb-10 md:mb-20">
+          <div className="flex flex-row justify-between items-end mb-4 md:mb-6 gap-2">
              <div className="flex flex-col">
-                <div className="flex items-center gap-2 mb-3">
-                   <div className="w-2 h-2 rounded-full bg-utonga-accent animate-pulse"></div>
-                   <span className="text-[10px] font-black uppercase tracking-[0.3em] text-utonga-accent">Tree Planting Campaign</span>
+                <div className="flex items-center gap-2 mb-2 md:mb-3">
+                   <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-utonga-accent animate-pulse"></div>
+                   <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-utonga-accent">Tree Planting Campaign</span>
                 </div>
-                <h2 className="text-3xl md:text-5xl font-black tracking-tight text-white flex flex-wrap items-baseline gap-x-3">
+                <h2 className="text-2xl md:text-5xl font-black tracking-tight text-white flex flex-col md:flex-row md:items-baseline md:gap-x-3">
                   ${Number(raised).toLocaleString()}
-                  <span className="text-gray-500 font-bold text-lg md:text-2xl uppercase tracking-tighter italic">raised of ${Number(goal).toLocaleString()} goal</span>
+                  <span className="text-gray-500 font-bold text-xs md:text-2xl uppercase tracking-tighter italic">of ${Number(goal).toLocaleString()} goal</span>
                 </h2>
              </div>
              <div className="text-right">
-                <span className="text-5xl md:text-7xl font-black text-white tracking-tighter">{percentage}%</span>
+                <span className="text-4xl md:text-7xl font-black text-white tracking-tighter">{percentage}%</span>
              </div>
           </div>
 
@@ -42,23 +42,23 @@ const StatsRow = ({ raised, goal, trees, days }) => {
         </div>
 
         {/* Triple Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 text-left">
-          <div className="bg-white/[0.02] border border-white/5 p-8 rounded-3xl group hover:bg-white/[0.04] transition-all">
-            <p className="text-3xl md:text-4xl font-black text-white mb-2">{Number(trees).toLocaleString()}</p>
-            <p className="text-gray-500 uppercase tracking-[0.2em] text-[10px] font-black group-hover:text-utonga-green transition-colors">Trees Pledged</p>
-            <div className="mt-4 w-12 h-0.5 bg-utonga-green opacity-30"></div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-12 text-left">
+          <div className="bg-white/[0.02] border border-white/5 p-6 md:p-8 rounded-2xl md:rounded-3xl group hover:bg-white/[0.04] transition-all">
+            <p className="text-2xl md:text-4xl font-black text-white mb-1 md:mb-2">{Number(trees).toLocaleString()}</p>
+            <p className="text-gray-500 uppercase tracking-[0.2em] text-[9px] md:text-[10px] font-black group-hover:text-utonga-green transition-colors">Trees Pledged</p>
+            <div className="mt-3 md:mt-4 w-10 md:w-12 h-0.5 bg-utonga-green opacity-30"></div>
           </div>
 
-          <div className="bg-white/[0.02] border border-white/5 p-8 rounded-3xl group hover:bg-white/[0.04] transition-all">
-            <p className="text-3xl md:text-4xl font-black text-white mb-2">{days}</p>
-            <p className="text-gray-500 uppercase tracking-[0.2em] text-[10px] font-black group-hover:text-utonga-accent transition-colors">Days Remaining</p>
-            <div className="mt-4 w-12 h-0.5 bg-utonga-accent opacity-30"></div>
+          <div className="bg-white/[0.02] border border-white/5 p-6 md:p-8 rounded-2xl md:rounded-3xl group hover:bg-white/[0.04] transition-all">
+            <p className="text-2xl md:text-4xl font-black text-white mb-1 md:mb-2">{days}</p>
+            <p className="text-gray-500 uppercase tracking-[0.2em] text-[9px] md:text-[10px] font-black group-hover:text-utonga-accent transition-colors">Days Remaining</p>
+            <div className="mt-3 md:mt-4 w-10 md:w-12 h-0.5 bg-utonga-accent opacity-30"></div>
           </div>
 
-          <div className="bg-white/[0.02] border border-white/5 p-8 rounded-3xl group hover:bg-white/[0.04] transition-all">
-            <p className="text-3xl md:text-4xl font-black text-white mb-2">1,240</p>
-            <p className="text-gray-500 uppercase tracking-[0.2em] text-[10px] font-black group-hover:text-white transition-colors">Active Donors</p>
-            <div className="mt-4 w-12 h-0.5 bg-white opacity-30"></div>
+          <div className="bg-white/[0.02] border border-white/5 p-6 md:p-8 rounded-2xl md:rounded-3xl group hover:bg-white/[0.04] transition-all">
+            <p className="text-2xl md:text-4xl font-black text-white mb-1 md:mb-2">1,240</p>
+            <p className="text-gray-500 uppercase tracking-[0.2em] text-[9px] md:text-[10px] font-black group-hover:text-white transition-colors">Active Donors</p>
+            <div className="mt-3 md:mt-4 w-10 md:w-12 h-0.5 bg-white opacity-30"></div>
           </div>
         </div>
       </div>

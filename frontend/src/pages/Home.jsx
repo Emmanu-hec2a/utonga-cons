@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import Hero from '../components/Hero';
 import StatsRow from '../components/StatsRow';
 import RoadmapSection from '../components/RoadmapSection';
@@ -13,7 +13,7 @@ const Home = () => {
   useEffect(() => {
     const fetchCampaign = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/campaign/');
+        const res = await api.get('/api/campaign/');
         setCampaign(res.data);
       } catch (err) {
         console.error('Campaign sync error:', err);

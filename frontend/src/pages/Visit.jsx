@@ -58,58 +58,60 @@ const Visit = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-start">
           <div>
-            <div className="inline-flex items-center rounded-full border border-utonga-accent/30 bg-utonga-accent/10 px-3 py-1 text-sm font-semibold text-utonga-accent mb-6">
+            <div className="inline-flex items-center rounded-full border border-utonga-accent/30 bg-utonga-accent/10 px-3 py-1 text-sm font-semibold text-utonga-accent mb-6 shadow-sm">
               <Compass size={16} className="mr-2" />
               Explore Utonga in person
             </div>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6">
+            <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 leading-tight">
               Visit the wetland sanctuary and book a memorable stay.
             </h1>
-            <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl">
+            <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl font-normal">
               Step onto the lakeside trails, enjoy guided wildlife viewing, and settle into a calm overnight experience shaped around conservation and community.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-4 mb-8">
-              <div className="rounded-2xl border border-gray-800 bg-gray-950/70 p-5">
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-md p-5 shadow-lg transition-colors hover:border-white/[0.15]">
                 <div className="flex items-center text-utonga-accent mb-3">
                   <MapPin size={18} className="mr-2" />
-                  <span className="font-semibold">What to expect</span>
+                  <span className="font-semibold text-white">What to expect</span>
                 </div>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-400 text-sm font-normal leading-relaxed">
                   Scenic walks, birding routes, lakeside camping, and flexible day-visit options for families and groups.
                 </p>
               </div>
-              <div className="rounded-2xl border border-gray-800 bg-gray-950/70 p-5">
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-md p-5 shadow-lg transition-colors hover:border-white/[0.15]">
                 <div className="flex items-center text-utonga-accent mb-3">
                   <Phone size={18} className="mr-2" />
-                  <span className="font-semibold">Booking support</span>
+                  <span className="font-semibold text-white">Booking support</span>
                 </div>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-400 text-sm font-normal leading-relaxed">
                   We recommend advance booking for weekends and school holidays so we can prepare your arrival well.
                 </p>
               </div>
             </div>
 
-            <div className="rounded-3xl border border-gray-800 bg-gradient-to-br from-gray-950 via-gray-900 to-black p-6">
-              <h2 className="text-2xl font-bold mb-4">Why visitors love Utonga</h2>
-              <ul className="space-y-3 text-gray-300">
-                <li className="flex items-start">
-                  <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
-                  Guided wetland and garden experiences that connect guests to local ecology.
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
-                  Comfortable, low-impact overnight stays with a strong conservation focus.
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
-                  A calm setting for reflection, wildlife watching, and community-led hospitality.
-                </li>
-              </ul>
+            <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.03] to-transparent backdrop-blur-xl p-6 shadow-xl relative overflow-hidden">
+              <div className="relative z-10">
+                <h2 className="text-2xl font-bold mb-4">Why visitors love Utonga</h2>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex items-start">
+                    <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
+                    <span className="text-base font-normal leading-relaxed">Guided wetland and garden experiences that connect guests to local ecology.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
+                    <span className="text-base font-normal leading-relaxed">Comfortable, low-impact overnight stays with a strong conservation focus.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
+                    <span className="text-base font-normal leading-relaxed">A calm setting for reflection, wildlife watching, and community-led hospitality.</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-gray-800 bg-gray-950/90 p-8 shadow-2xl">
+          <div className="rounded-3xl border border-white/[0.1] bg-white/[0.02] backdrop-blur-2xl p-8 md:p-10 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
             <div className="flex items-center text-utonga-accent font-semibold uppercase tracking-[0.2em] text-xs mb-3">
               <CalendarDays size={16} className="mr-2" />
               Reserve your visit
@@ -126,7 +128,7 @@ const Visit = () => {
                   name="visit_type"
                   value={form.visit_type}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                 >
                   <option value="day_visit">Day visit</option>
                   <option value="camp">Camping</option>
@@ -143,7 +145,7 @@ const Visit = () => {
                     value={form.date}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                    className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                   />
                 </div>
                 <div>
@@ -155,7 +157,7 @@ const Visit = () => {
                     value={form.party_size}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                    className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                   />
                 </div>
               </div>
@@ -168,7 +170,7 @@ const Visit = () => {
                   value={form.contact_name}
                   onChange={handleChange}
                   required
-                  className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                   placeholder="Amina Kato"
                 />
               </div>
@@ -181,7 +183,7 @@ const Visit = () => {
                   value={form.contact_phone}
                   onChange={handleChange}
                   required
-                  className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                   placeholder="+256 700 000000"
                 />
               </div>
@@ -193,7 +195,7 @@ const Visit = () => {
                   value={form.internal_notes}
                   onChange={handleChange}
                   rows="4"
-                  className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                   placeholder="Tell us about your group, accessibility needs, or arrival time."
                 />
               </div>

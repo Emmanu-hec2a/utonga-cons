@@ -187,52 +187,52 @@ const Roadmap = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-md">
           <div className="bg-gray-950 border border-white/10 rounded-[3rem] w-full max-w-2xl overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)]">
             <div className="p-8 md:p-16">
-              <div className="flex justify-between items-start mb-10">
+              <div className="flex justify-between items-start mb-8">
                 <div>
-                  <div className="flex items-center gap-3 mb-4">
-                     <span className={`w-3 h-3 rounded-full bg-${getStatusColor(selectedMilestone.status)}`}></span>
-                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Project Spec</span>
+                  <div className="flex items-center gap-2 mb-3">
+                     <span className={`w-2 h-2 rounded-full bg-${getStatusColor(selectedMilestone.status)}`}></span>
+                     <span className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500">Project Spec</span>
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-black leading-none">{selectedMilestone.title}</h2>
+                  <h2 className="text-3xl md:text-4xl font-black leading-tight tracking-tighter">{selectedMilestone.title}</h2>
                 </div>
                 <button
                   onClick={() => setSelectedMilestone(null)}
-                  className="p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-colors text-gray-400 hover:text-white"
+                  className="p-3 bg-white/[0.05] hover:bg-white/[0.1] rounded-xl transition-all text-gray-500 hover:text-white"
                 >
-                  <X size={24} />
+                  <X size={20} />
                 </button>
               </div>
 
-              <div className="space-y-8 mb-12">
-                <div className="bg-white/5 rounded-3xl p-6 border border-white/5">
-                  <p className="text-xl text-gray-300 leading-relaxed font-medium">
+              <div className="space-y-6 mb-10">
+                <div className="bg-white/[0.03] rounded-2xl p-6">
+                  <p className="text-base md:text-lg text-gray-400 leading-relaxed font-medium">
                     {selectedMilestone.description || "Strategic restoration waypoint focusing on indigenous biodiversity and sanctuary infrastructure. This node is critical for the long-term sustainability of the Sitatunga ecosystem."}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
-                    <span className="text-[10px] font-black text-gray-500 uppercase block mb-1">Status</span>
-                    <span className="font-bold capitalize">{selectedMilestone.status.replace('_', ' ')}</span>
+                  <div className="bg-white/[0.03] rounded-xl p-4">
+                    <span className="text-[9px] font-black text-gray-600 uppercase tracking-widest block mb-1">Status</span>
+                    <span className="text-sm font-bold capitalize text-white">{selectedMilestone.status.replace('_', ' ')}</span>
                   </div>
-                  <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
-                    <span className="text-[10px] font-black text-gray-500 uppercase block mb-1">Target</span>
-                    <span className="font-bold">{selectedMilestone.target_date || 'Phase 1'}</span>
+                  <div className="bg-white/[0.03] rounded-xl p-4">
+                    <span className="text-[9px] font-black text-gray-600 uppercase tracking-widest block mb-1">Target</span>
+                    <span className="text-sm font-bold text-white">{selectedMilestone.target_date || 'Phase 1'}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-white/10">
+              <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-white/[0.05]">
                  <Link
                   to="/give"
                   onClick={() => setSelectedMilestone(null)}
-                  className="flex-1 bg-utonga-green text-white py-5 rounded-2xl font-black text-center hover:opacity-90 transition-all shadow-xl shadow-utonga-green/20"
+                  className="flex-1 bg-utonga-green text-white py-4 rounded-xl font-black text-sm text-center hover:bg-opacity-90 transition-all shadow-lg shadow-utonga-green/10"
                  >
                    Fund this Project
                  </Link>
                  <button
                   onClick={() => setSelectedMilestone(null)}
-                  className="flex-1 bg-white/5 text-white py-5 rounded-2xl font-black hover:bg-white/10 transition-all"
+                  className="flex-1 bg-white/[0.08] text-white py-4 rounded-xl font-black text-sm hover:bg-white/[0.12] transition-all"
                  >
                    Close Details
                  </button>

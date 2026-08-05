@@ -57,54 +57,56 @@ const Partner = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 items-start">
           <div>
-            <div className="inline-flex items-center rounded-full border border-utonga-accent/30 bg-utonga-accent/10 px-3 py-1 text-sm font-semibold text-utonga-accent mb-6">
+            <div className="inline-flex items-center rounded-full border border-utonga-accent/30 bg-utonga-accent/10 px-3 py-1 text-sm font-semibold text-utonga-accent mb-6 shadow-sm">
               <Handshake size={16} className="mr-2" />
               Shape the next chapter of Utonga
             </div>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6">
+            <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 leading-tight">
               Partner with us to grow conservation tourism responsibly.
             </h1>
-            <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl">
+            <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl font-normal">
               We collaborate with tour operators, diaspora networks, and impact-minded investors to build a place that is welcoming, measurable, and community-led.
             </p>
 
-            <div className="rounded-3xl border border-gray-800 bg-gradient-to-br from-gray-950 via-gray-900 to-black p-6 mb-8">
-              <h2 className="text-2xl font-bold mb-4">What partnership looks like</h2>
-              <ul className="space-y-3 text-gray-300">
-                <li className="flex items-start">
-                  <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
-                  Strategic support for visitor experiences, hospitality, and conservation programming.
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
-                  Shared planning for tours, community engagement, and responsible growth.
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
-                  Long-term collaboration with transparency and measurable impact.
-                </li>
-              </ul>
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl p-6 shadow-xl mb-8 relative overflow-hidden">
+              <div className="relative z-10">
+                <h2 className="text-2xl font-bold mb-4">What partnership looks like</h2>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex items-start">
+                    <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
+                    <span className="text-base font-normal leading-relaxed">Strategic support for visitor experiences, hospitality, and conservation programming.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
+                    <span className="text-base font-normal leading-relaxed">Shared planning for tours, community engagement, and responsible growth.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
+                    <span className="text-base font-normal leading-relaxed">Long-term collaboration with transparency and measurable impact.</span>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
-              <div className="rounded-2xl border border-gray-800 bg-gray-950/70 p-5">
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-5 shadow-lg transition-colors hover:border-white/[0.15]">
                 <div className="flex items-center text-utonga-accent mb-3">
                   <BriefcaseBusiness size={18} className="mr-2" />
-                  <span className="font-semibold">For operators</span>
+                  <span className="font-semibold text-white">For operators</span>
                 </div>
-                <p className="text-gray-400 text-sm">Design immersive visitor routes and cultural experiences with local guidance.</p>
+                <p className="text-gray-400 text-sm font-normal leading-relaxed">Design immersive visitor routes and cultural experiences with local guidance.</p>
               </div>
-              <div className="rounded-2xl border border-gray-800 bg-gray-950/70 p-5">
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-5 shadow-lg transition-colors hover:border-white/[0.15]">
                 <div className="flex items-center text-utonga-accent mb-3">
                   <Mail size={18} className="mr-2" />
-                  <span className="font-semibold">For supporters</span>
+                  <span className="font-semibold text-white">For supporters</span>
                 </div>
-                <p className="text-gray-400 text-sm">Discuss funding, community programs, or future development opportunities.</p>
+                <p className="text-gray-400 text-sm font-normal leading-relaxed">Discuss funding, community programs, or future development opportunities.</p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-gray-800 bg-gray-950/90 p-8 shadow-2xl">
+          <div className="rounded-3xl border border-white/[0.1] bg-white/[0.02] backdrop-blur-2xl p-8 md:p-10 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
             <h2 className="text-3xl font-bold mb-2">Start a partnership inquiry</h2>
             <p className="text-gray-400 mb-6">
               Tell us what kind of collaboration you are exploring and we will connect you with the right team.
@@ -117,7 +119,7 @@ const Partner = () => {
                   name="type"
                   value={form.type}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                 >
                   <option value="tour_operator">Tour operator</option>
                   <option value="investor">Investor</option>
@@ -132,7 +134,7 @@ const Partner = () => {
                   name="org_name"
                   value={form.org_name}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                   placeholder="Your organization"
                 />
               </div>
@@ -146,7 +148,7 @@ const Partner = () => {
                     value={form.contact_name}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                    className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                     placeholder="Amina Kato"
                   />
                 </div>
@@ -158,7 +160,7 @@ const Partner = () => {
                     value={form.contact_email}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                    className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -172,7 +174,7 @@ const Partner = () => {
                   onChange={handleChange}
                   required
                   rows="4"
-                  className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                   placeholder="Share your idea, goals, or the kind of partnership you are exploring."
                 />
               </div>
@@ -184,7 +186,7 @@ const Partner = () => {
                   value={form.notes}
                   onChange={handleChange}
                   rows="3"
-                  className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                   placeholder="Optional context such as timelines or audience details."
                 />
               </div>

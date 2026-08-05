@@ -38,52 +38,52 @@ const RoadmapManager = () => {
   };
 
   return (
-    <div className="space-y-8 relative">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 relative">
+      <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-black">Restoration Roadmap</h1>
-          <p className="text-gray-500 mt-1 font-medium">Define and track the organization's strategic milestones.</p>
+          <h1 className="text-2xl font-black">Restoration Roadmap</h1>
+          <p className="text-gray-500 text-xs mt-1 font-medium uppercase tracking-wider">Strategic milestones and ecosystem progress.</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center bg-utonga-green text-white px-6 py-3 rounded-xl font-bold hover:bg-opacity-90 transition-all text-sm cursor-pointer"
+          className="flex items-center bg-utonga-green text-white px-5 py-2.5 rounded-lg font-black hover:bg-opacity-90 transition-all text-[10px] uppercase tracking-widest shadow-lg shadow-utonga-green/20 cursor-pointer"
         >
-          <Plus size={18} className="mr-2" /> New Milestone
+          <Plus size={14} className="mr-2" /> New Waypoint
         </button>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {loading ? (
-          <div className="text-center py-20 text-gray-500">Loading roadmap...</div>
+          <div className="text-center py-20 text-gray-500 italic uppercase tracking-widest text-[10px] font-black">Loading mission path...</div>
         ) : milestones.length > 0 ? milestones.map((m) => (
-          <div key={m.id} className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex items-center gap-6 group hover:border-utonga-accent transition-all cursor-default">
-            <div className="text-gray-700 cursor-grab group-hover:text-gray-500 transition-colors">
-              <GripVertical size={20} />
+          <div key={m.id} className="bg-gray-900 rounded-xl p-4 flex items-center gap-5 group hover:bg-gray-800/50 transition-all cursor-default shadow-lg">
+            <div className="text-gray-800 cursor-grab group-hover:text-gray-600 transition-colors shrink-0">
+              <GripVertical size={16} />
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-4">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Phase {m.phase}</span>
-                <h4 className="text-lg font-bold">{m.title}</h4>
+              <div className="flex items-center gap-3">
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-600 shrink-0">P{m.phase}</span>
+                <h4 className="text-md font-bold text-gray-200">{m.title}</h4>
               </div>
-              <p className="text-sm text-gray-500 mt-1 font-medium">Target Date: {m.target_date || 'Unscheduled'}</p>
+              <p className="text-[10px] text-gray-600 mt-1 font-black uppercase tracking-tighter">Target: {m.target_date || 'Future Phase'}</p>
             </div>
             <button
               onClick={() => toggleStatus(m.id, m.status)}
-              className={`flex items-center px-6 py-3 rounded-xl font-bold text-sm transition-all border-2 cursor-pointer ${
-                m.status === 'done' ? 'border-utonga-green bg-utonga-green/10 text-utonga-green' :
-                m.status === 'in_progress' ? 'border-utonga-accent bg-utonga-accent/10 text-utonga-accent' :
-                'border-gray-800 bg-black text-gray-500'
+              className={`flex items-center px-4 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all border shrink-0 cursor-pointer ${
+                m.status === 'done' ? 'border-utonga-green/30 bg-utonga-green/5 text-utonga-green' :
+                m.status === 'in_progress' ? 'border-utonga-accent/30 bg-utonga-accent/5 text-utonga-accent' :
+                'border-gray-800 bg-black text-gray-600'
               }`}
             >
-              {m.status === 'done' ? <CheckCircle2 size={16} className="mr-2" /> :
-               m.status === 'in_progress' ? <Clock size={16} className="mr-2" /> :
-               <Circle size={16} className="mr-2" />}
+              {m.status === 'done' ? <CheckCircle2 size={12} className="mr-2" /> :
+               m.status === 'in_progress' ? <Clock size={12} className="mr-2" /> :
+               <Circle size={12} className="mr-2" />}
               {m.status.replace('_', ' ')}
             </button>
           </div>
         )) : (
-          <div className="text-center py-20 bg-gray-900 rounded-[2rem] border border-gray-800 border-dashed">
-            <p className="text-gray-500 font-bold italic text-sm">No roadmap milestones established.</p>
+          <div className="text-center py-16 bg-gray-900 rounded-2xl border border-gray-800 border-dashed">
+            <p className="text-gray-500 font-black uppercase tracking-widest text-[10px]">No milestones defined.</p>
           </div>
         )}
       </div>

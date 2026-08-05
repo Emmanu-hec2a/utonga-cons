@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Mail, Phone } from 'lucide-react';
+import { useSettings } from '../context/SettingsContext';
 
 const Footer = () => {
+  const { settings } = useSettings();
+
   return (
     <footer className="bg-black py-16 border-t border-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,9 +36,17 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-bold mb-6">Contact</h4>
             <ul className="space-y-4 text-gray-400 text-sm">
-              <li className="flex items-center"><Phone size={16} className="mr-2" /> +256 770 000 000</li>
-              <li className="flex items-center"><Mail size={16} className="mr-2" /> hello@utonga.org</li>
-              <li>Sitatunga Botanical Garden, Entebbe, Uganda</li>
+              <li className="flex items-center">
+                <Phone size={16} className="mr-2 text-utonga-accent" />
+                {settings.contact_phone || '+256 770 000 000'}
+              </li>
+              <li className="flex items-center">
+                <Mail size={16} className="mr-2 text-utonga-accent" />
+                {settings.contact_email || 'hello@utonga.org'}
+              </li>
+              <li className="text-xs leading-relaxed opacity-80">
+                Sitatunga Botanical Garden, Entebbe, Uganda
+              </li>
             </ul>
           </div>
 

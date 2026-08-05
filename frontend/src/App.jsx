@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { SettingsProvider } from './context/SettingsContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import DonationFlow from './pages/DonationFlow';
@@ -74,10 +75,12 @@ function AppRoutes() {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <ScrollToTop />
-        <AppRoutes />
-      </Router>
+      <SettingsProvider>
+        <Router>
+          <ScrollToTop />
+          <AppRoutes />
+        </Router>
+      </SettingsProvider>
     </AuthProvider>
   );
 }

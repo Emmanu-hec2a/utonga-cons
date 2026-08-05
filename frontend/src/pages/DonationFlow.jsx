@@ -107,12 +107,12 @@ const DonationFlow = () => {
                 <button
                   key={m.id}
                   onClick={() => setMethod(m.id)}
-                  className={`flex items-center p-6 rounded-xl border-2 transition-all ${method === m.id ? 'border-utonga-accent bg-gray-900' : 'border-gray-800 hover:border-gray-700'}`}
+                  className={`flex items-center p-5 rounded-2xl border transition-all duration-300 ${method === m.id ? 'border-utonga-accent bg-utonga-accent/5' : 'border-white/[0.08] hover:border-white/20 bg-white/[0.02]'}`}
                 >
-                  <div className={`p-2 rounded-lg mr-4 bg-white flex items-center justify-center overflow-hidden w-16 h-10 ${method === m.id ? 'ring-2 ring-utonga-accent' : ''}`}>
-                    <img src={m.img} alt={m.name} className="w-full h-full object-contain" />
+                  <div className={`rounded-xl mr-5 bg-white/[0.05] backdrop-blur-md flex items-center justify-center overflow-hidden w-20 h-12 border border-white/[0.05] transition-transform duration-300 ${method === m.id ? 'scale-105 border-utonga-accent/30' : ''}`}>
+                    <img src={m.img} alt={m.name} className="w-full h-full object-contain p-1.5" />
                   </div>
-                  <span className="font-bold">{m.name}</span>
+                  <span className={`font-bold transition-colors ${method === m.id ? 'text-white' : 'text-gray-400'}`}>{m.name}</span>
                 </button>
               ))}
             </div>

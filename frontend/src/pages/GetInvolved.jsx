@@ -55,54 +55,56 @@ const GetInvolved = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 items-start">
           <div>
-            <div className="inline-flex items-center rounded-full border border-utonga-accent/30 bg-utonga-accent/10 px-3 py-1 text-sm font-semibold text-utonga-accent mb-6">
+            <div className="inline-flex items-center rounded-full border border-utonga-accent/30 bg-utonga-accent/10 px-3 py-1 text-sm font-semibold text-utonga-accent mb-6 shadow-sm">
               <HeartHandshake size={16} className="mr-2" />
               Join the movement
             </div>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6">
+            <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 leading-tight">
               Help restore and protect Utonga for the next generation.
             </h1>
-            <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl">
+            <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl font-normal">
               Whether you want to plant, guide, learn, or lend practical skills, there is a place for you in this growing community effort.
             </p>
 
-            <div className="rounded-3xl border border-gray-800 bg-gradient-to-br from-gray-950 via-gray-900 to-black p-6 mb-8">
-              <h2 className="text-2xl font-bold mb-4">Ways to participate</h2>
-              <ul className="space-y-3 text-gray-300">
-                <li className="flex items-start">
-                  <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
-                  Join hiking and wetland walks that connect visitors with the landscape.
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
-                  Support restoration days with tree planting and site care.
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
-                  Share skills in education, hospitality, design, or community organizing.
-                </li>
-              </ul>
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl p-6 shadow-xl mb-8 relative overflow-hidden">
+              <div className="relative z-10">
+                <h2 className="text-2xl font-bold mb-4">Ways to participate</h2>
+                <ul className="space-y-3 text-gray-300">
+                  <li className="flex items-start">
+                    <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
+                    <span className="text-base font-normal leading-relaxed">Join hiking and wetland walks that connect visitors with the landscape.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
+                    <span className="text-base font-normal leading-relaxed">Support restoration days with tree planting and site care.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle2 size={18} className="mr-3 mt-1 text-utonga-accent" />
+                    <span className="text-base font-normal leading-relaxed">Share skills in education, hospitality, design, or community organizing.</span>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
-              <div className="rounded-2xl border border-gray-800 bg-gray-950/70 p-5">
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-5 shadow-lg transition-colors hover:border-white/[0.15]">
                 <div className="flex items-center text-utonga-accent mb-3">
                   <Mountain size={18} className="mr-2" />
-                  <span className="font-semibold">Hiking club</span>
+                  <span className="font-semibold text-white">Hiking club</span>
                 </div>
-                <p className="text-gray-400 text-sm">Discover the trails and learn more about the biodiversity around Lake Victoria.</p>
+                <p className="text-gray-400 text-sm font-normal leading-relaxed">Discover the trails and learn more about the biodiversity around Lake Victoria.</p>
               </div>
-              <div className="rounded-2xl border border-gray-800 bg-gray-950/70 p-5">
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-5 shadow-lg transition-colors hover:border-white/[0.15]">
                 <div className="flex items-center text-utonga-accent mb-3">
                   <Trees size={18} className="mr-2" />
-                  <span className="font-semibold">Volunteer crews</span>
+                  <span className="font-semibold text-white">Volunteer crews</span>
                 </div>
-                <p className="text-gray-400 text-sm">Join practical restoration and stewardship events throughout the year.</p>
+                <p className="text-gray-400 text-sm font-normal leading-relaxed">Join practical restoration and stewardship events throughout the year.</p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-gray-800 bg-gray-950/90 p-8 shadow-2xl">
+          <div className="rounded-3xl border border-white/[0.1] bg-white/[0.02] backdrop-blur-2xl p-8 md:p-10 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
             <h2 className="text-3xl font-bold mb-2">Sign up as a volunteer</h2>
             <p className="text-gray-400 mb-6">
               Share a little about yourself and we will match you with the right opportunity.
@@ -115,7 +117,7 @@ const GetInvolved = () => {
                   name="interest"
                   value={form.interest}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                 >
                   <option value="hiking_club">Hiking club</option>
                   <option value="volunteer">General volunteering</option>
@@ -130,7 +132,7 @@ const GetInvolved = () => {
                   value={form.name}
                   onChange={handleChange}
                   required
-                  className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                   placeholder="Moses Omondi"
                 />
               </div>
@@ -143,7 +145,7 @@ const GetInvolved = () => {
                   value={form.contact_email}
                   onChange={handleChange}
                   required
-                  className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                   placeholder="you@example.com"
                 />
               </div>
@@ -156,7 +158,7 @@ const GetInvolved = () => {
                   value={form.location}
                   onChange={handleChange}
                   required
-                  className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                   placeholder="Kampala, Uganda"
                 />
               </div>
@@ -169,7 +171,7 @@ const GetInvolved = () => {
                   onChange={handleChange}
                   required
                   rows="4"
-                  className="w-full rounded-2xl border border-gray-800 bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-black px-4 py-3 text-white outline-none focus:border-utonga-accent"
                   placeholder="Tell us what you can bring, such as guiding, photography, gardening, or weekend availability."
                 />
               </div>

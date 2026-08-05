@@ -12,12 +12,12 @@ from django.conf import settings
 from .email_utils import send_resend_email
 from .models import (
     Campaign, Donation, RoadmapMilestone, GalleryImage,
-    Booking, PartnerLead, VolunteerSignup
+    Booking, PartnerLead, VolunteerSignup, SiteSetting
 )
 from .serializers import (
     CampaignSerializer, RoadmapMilestoneSerializer,
     GalleryImageSerializer, BookingSerializer, PartnerLeadSerializer,
-    VolunteerSignupSerializer
+    VolunteerSignupSerializer, SiteSettingSerializer
 )
 
 class CampaignView(generics.RetrieveAPIView):
@@ -57,6 +57,11 @@ class GalleryListView(generics.ListAPIView):
     permission_classes = [AllowAny]
     queryset = GalleryImage.objects.all()
     serializer_class = GalleryImageSerializer
+
+class SettingsListView(generics.ListAPIView):
+    permission_classes = [AllowAny]
+    queryset = SiteSetting.objects.all()
+    serializer_class = SiteSettingSerializer
 
 class BookingCreateView(generics.CreateAPIView):
     permission_classes = [AllowAny]

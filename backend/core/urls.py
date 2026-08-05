@@ -4,7 +4,7 @@ from knox import views as knox_views
 from .views import (
     CampaignView, GalleryListView, BookingCreateView,
     PartnerLeadCreateView, VolunteerSignupCreateView, initiate_donation,
-    paystack_webhook, RoadmapListView
+    paystack_webhook, RoadmapListView, SettingsListView
 )
 from .admin_views import (
     DonationAdminViewSet, BookingAdminViewSet, RoadmapAdminViewSet,
@@ -32,6 +32,7 @@ urlpatterns = [
     path('partner-leads/', PartnerLeadCreateView.as_view(), name='partner-lead-create'),
     path('volunteer-signups/', VolunteerSignupCreateView.as_view(), name='volunteer-signup-create'),
     path('donations/initiate/', initiate_donation, name='donation-initiate'),
+    path('settings/', SettingsListView.as_view(), name='settings-list'),
     path('webhooks/paystack/', paystack_webhook, name='paystack-webhook'),
     
     # Admin endpoints

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Campaign, Donation, RoadmapMilestone, GalleryImage,
-    Booking, PartnerLead, VolunteerSignup, StaffUser, AuditLogEntry, SiteSetting
+    Booking, PartnerLead, VolunteerSignup, StaffUser, AuditLogEntry, SiteSetting, CallLog
 )
 
 class CampaignSerializer(serializers.ModelSerializer):
@@ -72,4 +72,10 @@ class AuditLogEntrySerializer(serializers.ModelSerializer):
 class SiteSettingSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteSetting
+        fields = '__all__'
+
+class CallLogSerializer(serializers.ModelSerializer):
+    staff_name = serializers.CharField(source='staff_actor.username', read_only=True)
+    class Meta:
+        model = CallLog
         fields = '__all__'

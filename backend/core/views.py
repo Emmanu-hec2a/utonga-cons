@@ -2,6 +2,7 @@ import requests
 import hmac
 import hashlib
 import json
+import os
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -9,16 +10,20 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 from .email_utils import send_resend_email
 from .models import (
     Campaign, Donation, RoadmapMilestone, GalleryImage,
-    Booking, PartnerLead, VolunteerSignup, SiteSetting
+    Booking, PartnerLead, VolunteerSignup, SiteSetting, CallLog
 )
 from .serializers import (
     CampaignSerializer, RoadmapMilestoneSerializer,
     GalleryImageSerializer, BookingSerializer, PartnerLeadSerializer,
-    VolunteerSignupSerializer, SiteSettingSerializer
+    VolunteerSignupSerializer, SiteSettingSerializer, CallLogSerializer
 )
+from .telephony import initiate_bridge_call
+from twilio.twiml.voice_response import VoiceResponse
 
 class CampaignView(generics.RetrieveAPIView):
     permission_classes = [AllowAny]
@@ -178,3 +183,81 @@ def initiate_donation(request):
             return Response({'error': res_data['message']}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def initiate_call(request):
+    to_number = request.data.get('to_number')
+    staff_number = request.data.get('staff_number')
+    related_type = request.data.get('related_type') # booking, lead, volunteer
+    related_id = request.data.get('related_id')
+
+    if not all([to_number, staff_number]):
+        return Response({'error': 'Missing numbers'}, status=status.HTTP_400_BAD_REQUEST)
+
+    related_obj = None
+    if related_type == 'booking':
+        related_obj = get_object_or_404(Booking, id=related_id)
+    elif related_type == 'lead':
+        related_obj = get_object_or_404(PartnerLead, id=related_id)
+    elif related_type == 'volunteer':
+        related_obj = get_object_or_404(VolunteerSignup, id=related_id)
+
+    try:
+        call_log = initiate_bridge_call(
+            staff_number=staff_number,
+            visitor_number=to_number,
+            staff_user=request.user,
+            related_object=related_obj
+        )
+        return Response(CallLogSerializer(call_log).data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@csrf_exempt
+def telephony_connect_visitor(request):
+    """
+    Twilio TwiML callback when staff answers.
+    It returns TwiML to dial the visitor.
+    """
+    to_number = request.GET.get('to')
+    log_id = request.GET.get('log_id')
+    
+    response = VoiceResponse()
+    response.say("Connecting you to Utonga visitor. Please wait.")
+    
+    dial = response.dial(caller_id=os.environ.get('TWILIO_FROM_NUMBER'))
+    dial.number(to_number)
+    
+    return HttpResponse(str(response), content_type='text/xml')
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def telephony_status_callback(request, log_id):
+    """
+    Twilio Status Callback to update our CallLog.
+    """
+    call_log = get_object_or_404(CallLog, id=log_id)
+    call_status = request.data.get('CallStatus')
+    duration = request.data.get('CallDuration')
+    
+    if call_status:
+        # Map Twilio statuses to our choices
+        status_map = {
+            'queued': 'initiated',
+            'ringing': 'ringing',
+            'in-progress': 'in-progress',
+            'completed': 'completed',
+            'failed': 'failed',
+            'busy': 'busy',
+            'no-answer': 'no-answer',
+            'canceled': 'canceled',
+        }
+        call_log.status = status_map.get(call_status, call_log.status)
+        
+    if duration:
+        call_log.duration = int(duration)
+        
+    call_log.save()
+    return Response({'status': 'ok'})

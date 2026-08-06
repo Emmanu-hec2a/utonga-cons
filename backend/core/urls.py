@@ -4,7 +4,8 @@ from knox import views as knox_views
 from .views import (
     CampaignView, GalleryListView, BookingCreateView,
     PartnerLeadCreateView, VolunteerSignupCreateView, initiate_donation,
-    paystack_webhook, RoadmapListView, SettingsListView
+    paystack_webhook, RoadmapListView, SettingsListView,
+    initiate_call, telephony_connect_visitor, telephony_status_callback
 )
 from .admin_views import (
     DonationAdminViewSet, BookingAdminViewSet, RoadmapAdminViewSet,
@@ -42,5 +43,11 @@ urlpatterns = [
     path('admin/verify-token/', verify_token, name='admin-verify-token'),
     path('admin/dashboard/', admin_dashboard_stats, name='admin-dashboard'),
     path('admin/audit-log/', AuditLogListView.as_view(), name='admin-audit-log'),
+    
+    # Telephony
+    path('admin/calls/initiate/', initiate_call, name='call-initiate'),
+    path('telephony/connect-visitor/', telephony_connect_visitor, name='telephony-connect-visitor'),
+    path('telephony/status-callback/<int:log_id>/', telephony_status_callback, name='telephony-status-callback'),
+
     path('', include(router.urls)),
 ]

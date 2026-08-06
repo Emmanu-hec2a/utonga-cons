@@ -191,3 +191,39 @@ class SiteSetting(models.Model):
 
     def __str__(self):
         return self.key
+
+class CallLog(models.Model):
+    DIRECTION_CHOICES = [
+        ('outbound', 'Outbound'),
+        ('inbound', 'Inbound'),
+    ]
+    STATUS_CHOICES = [
+        ('initiated', 'Initiated'),
+        ('ringing', 'Ringing'),
+        ('in-progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+        ('busy', 'Busy'),
+        ('no-answer', 'No Answer'),
+        ('canceled', 'Canceled'),
+    ]
+    
+    booking = models.ForeignKey(Booking, on_delete=models.SET_NULL, null=True, blank=True, related_name='calls')
+    partner_lead = models.ForeignKey(PartnerLead, on_delete=models.SET_NULL, null=True, blank=True, related_name='calls')
+    volunteer = models.ForeignKey(VolunteerSignup, on_delete=models.SET_NULL, null=True, blank=True, related_name='calls')
+    
+    staff_actor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='initiated_calls')
+    
+    sid = models.CharField(max_length=100, unique=True, null=True, blank=True) # Twilio SID
+    direction = models.CharField(max_length=20, choices=DIRECTION_CHOICES, default='outbound')
+    from_number = models.CharField(max_length=30)
+    to_number = models.CharField(max_length=30)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='initiated')
+    duration = models.IntegerField(null=True, blank=True) # in seconds
+    
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Call to {self.to_number} - {self.status}"

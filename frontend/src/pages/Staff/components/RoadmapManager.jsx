@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import api from '../../../api';
-import { Plus, GripVertical, CheckCircle2, Clock, Circle } from 'lucide-react';
+import { Plus, GripVertical, CheckCircle2, Clock, Circle, Edit2 } from 'lucide-react';
 import RoadmapModal from './RoadmapModal';
+import { RoadmapSkeleton } from './Skeleton';
 
 const RoadmapManager = () => {
   const [milestones, setMilestones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingMilestone, setEditingMilestone] = useState(null);
 
   const fetchMilestones = async () => {
     try {
@@ -37,6 +39,16 @@ const RoadmapManager = () => {
     }
   };
 
+  const handleEdit = (milestone) => {
+    setEditingMilestone(milestone);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingMilestone(null);
+  };
+
   return (
     <div className="space-y-6 relative">
       <div className="flex justify-between items-end">
@@ -54,7 +66,13 @@ const RoadmapManager = () => {
 
       <div className="space-y-3">
         {loading ? (
-          <div className="text-center py-20 text-gray-500 italic uppercase tracking-widest text-[10px] font-black">Loading mission path...</div>
+          <>
+            <RoadmapSkeleton />
+            <RoadmapSkeleton />
+            <RoadmapSkeleton />
+            <RoadmapSkeleton />
+            <RoadmapSkeleton />
+          </>
         ) : milestones.length > 0 ? milestones.map((m) => (
           <div key={m.id} className="bg-gray-900 rounded-xl p-4 flex items-center gap-5 group hover:bg-gray-800/50 transition-all cursor-default shadow-lg">
             <div className="text-gray-800 cursor-grab group-hover:text-gray-600 transition-colors shrink-0">
@@ -67,19 +85,28 @@ const RoadmapManager = () => {
               </div>
               <p className="text-[10px] text-gray-600 mt-1 font-black uppercase tracking-tighter">Target: {m.target_date || 'Future Phase'}</p>
             </div>
-            <button
-              onClick={() => toggleStatus(m.id, m.status)}
-              className={`flex items-center px-4 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all border shrink-0 cursor-pointer ${
-                m.status === 'done' ? 'border-utonga-green/30 bg-utonga-green/5 text-utonga-green' :
-                m.status === 'in_progress' ? 'border-utonga-accent/30 bg-utonga-accent/5 text-utonga-accent' :
-                'border-gray-800 bg-black text-gray-600'
-              }`}
-            >
-              {m.status === 'done' ? <CheckCircle2 size={12} className="mr-2" /> :
-               m.status === 'in_progress' ? <Clock size={12} className="mr-2" /> :
-               <Circle size={12} className="mr-2" />}
-              {m.status.replace('_', ' ')}
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => handleEdit(m)}
+                className="p-2 bg-gray-800 text-gray-400 hover:text-white rounded-lg transition-all cursor-pointer"
+                title="Edit Milestone"
+              >
+                <Edit2 size={14} />
+              </button>
+              <button
+                onClick={() => toggleStatus(m.id, m.status)}
+                className={`flex items-center px-4 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all border shrink-0 cursor-pointer ${
+                  m.status === 'done' ? 'border-utonga-green/30 bg-utonga-green/5 text-utonga-green' :
+                  m.status === 'in_progress' ? 'border-utonga-accent/30 bg-utonga-accent/5 text-utonga-accent' :
+                  'border-gray-800 bg-black text-gray-600'
+                }`}
+              >
+                {m.status === 'done' ? <CheckCircle2 size={12} className="mr-2" /> :
+                 m.status === 'in_progress' ? <Clock size={12} className="mr-2" /> :
+                 <Circle size={12} className="mr-2" />}
+                {m.status.replace('_', ' ')}
+              </button>
+            </div>
           </div>
         )) : (
           <div className="text-center py-16 bg-gray-900 rounded-2xl border border-gray-800 border-dashed">
@@ -90,8 +117,9 @@ const RoadmapManager = () => {
 
       {isModalOpen && (
         <RoadmapModal
-          onClose={() => setIsModalOpen(false)}
+          onClose={handleCloseModal}
           onUploadSuccess={fetchMilestones}
+          milestone={editingMilestone}
         />
       )}
     </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../../../api';
 import { Mail, Briefcase, Phone, MessageSquare, Users } from 'lucide-react';
+import { LeadSkeleton } from './Skeleton';
 
 const LeadList = () => {
   const [leads, setLeads] = useState([]);
@@ -36,7 +37,12 @@ const LeadList = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {loading ? (
-          <div className="col-span-full text-center py-20 text-gray-500 italic uppercase tracking-widest text-[10px] font-black">Accessing pipeline data...</div>
+          <>
+            <LeadSkeleton />
+            <LeadSkeleton />
+            <LeadSkeleton />
+            <LeadSkeleton />
+          </>
         ) : leads.length > 0 ? leads.map((l) => (
           <div key={l.id} className="bg-gray-900 rounded-2xl p-5 space-y-4 hover:bg-gray-800/50 transition-all group shadow-lg">
             <div className="flex justify-between items-start">

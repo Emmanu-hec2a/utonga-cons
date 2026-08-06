@@ -2,13 +2,13 @@ import { useState } from 'react';
 import api from '../../../api';
 import { X, Map, CheckCircle2, AlertCircle } from 'lucide-react';
 
-const RoadmapModal = ({ onClose, onUploadSuccess }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [status, setStatus] = useState('upcoming');
-  const [category, setCategory] = useState('trails_garden');
-  const [phase, setPhase] = useState(1);
-  const [targetDate, setTargetDate] = useState('');
+const RoadmapModal = ({ onClose, onUploadSuccess, milestone }) => {
+  const [title, setTitle] = useState(milestone?.title || '');
+  const [description, setDescription] = useState(milestone?.description || '');
+  const [status, setStatus] = useState(milestone?.status || 'upcoming');
+  const [category, setCategory] = useState(milestone?.category || 'trails_garden');
+  const [phase, setPhase] = useState(milestone?.phase || 1);
+  const [targetDate, setTargetDate] = useState(milestone?.target_date || '');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -18,20 +18,27 @@ const RoadmapModal = ({ onClose, onUploadSuccess }) => {
     setError('');
 
     try {
-      await api.post('/api/admin/roadmap/', {
+      const data = {
         title,
         description,
         status,
         category,
         phase,
         target_date: targetDate || null,
-        order: 0
-      });
+        order: milestone?.order || 0
+      };
+
+      if (milestone) {
+        await api.patch(`/api/admin/roadmap/${milestone.id}/`, data);
+      } else {
+        await api.post('/api/admin/roadmap/', data);
+      }
+
       onUploadSuccess();
       onClose();
     } catch (err) {
-      console.error('Milestone creation error:', err);
-      setError('Failed to create milestone. Ensure you have admin permissions.');
+      console.error('Milestone save error:', err);
+      setError(`Failed to ${milestone ? 'update' : 'create'} milestone. Ensure you have admin permissions.`);
     } finally {
       setSaving(false);
     }
@@ -45,7 +52,7 @@ const RoadmapModal = ({ onClose, onUploadSuccess }) => {
             <div className="w-10 h-10 bg-utonga-green/20 text-utonga-green rounded-xl flex items-center justify-center">
               <Map size={20} />
             </div>
-            <h2 className="text-2xl font-black italic">Strategic Milestone</h2>
+            <h2 className="text-2xl font-black italic">{milestone ? 'Edit Waypoint' : 'Strategic Milestone'}</h2>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-gray-800 rounded-xl transition-colors">
             <X size={24} />

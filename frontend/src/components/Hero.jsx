@@ -16,7 +16,7 @@ const images = [
     alt: 'Scenic view of Brown Deer during the golden hour'
   },
   {
-    url: 'https://images.unsplash.com/photo-1751561484224-71ecfb3086d9?q=80&w=2000&auto=format&fit=crop',
+    url: 'https://images.unsplash.com/photo-1751568928469-4404ca644fa9?q=80&w=2000&auto=format&fit=crop',
     alt: 'Serene wetland sanctuary on the shores of Lake Victoria'
   }
 ];

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../../../api';
 import { Search, Filter, Download, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { TableRowSkeleton } from './Skeleton';
 
 const DonationList = () => {
   const [donations, setDonations] = useState([]);
@@ -79,7 +80,13 @@ const DonationList = () => {
           </thead>
           <tbody className="divide-y divide-gray-800/50">
             {loading ? (
-              <tr><td colSpan="5" className="px-6 py-12 text-center text-gray-600 uppercase tracking-widest text-[10px] font-black">Syncing ledger...</td></tr>
+              <>
+                <TableRowSkeleton cols={5} />
+                <TableRowSkeleton cols={5} />
+                <TableRowSkeleton cols={5} />
+                <TableRowSkeleton cols={5} />
+                <TableRowSkeleton cols={5} />
+              </>
             ) : filteredDonations.length > 0 ? filteredDonations.map((d) => (
               <tr key={d.id} className="hover:bg-white/[0.01] transition-colors text-xs">
                 <td className="px-6 py-4">

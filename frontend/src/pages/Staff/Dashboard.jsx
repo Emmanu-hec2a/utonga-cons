@@ -11,6 +11,7 @@ import RoadmapManager from './components/RoadmapManager';
 import LeadList from './components/LeadList';
 import GalleryManager from './components/GalleryManager';
 import SettingsManager from './components/SettingsManager';
+import { StatsSkeleton, TableRowSkeleton } from './components/Skeleton';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -101,43 +102,54 @@ const AdminDashboard = () => {
               </header>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-gray-900 p-5 rounded-2xl relative overflow-hidden group hover:bg-gray-800/50 transition-all shadow-lg">
-                  <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
-                    <CircleDollarSign size={40} />
-                  </div>
-                  <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-2">Total Raised</p>
-                  <p className="text-2xl font-black text-utonga-accent">${stats?.total_raised?.toLocaleString() || '0'}</p>
-                  <div className="mt-3 flex items-center text-gray-600 text-[9px] font-bold uppercase tracking-tighter">
-                    <span>Verified Ledger</span>
-                  </div>
-                </div>
+                {!stats ? (
+                  <>
+                    <StatsSkeleton />
+                    <StatsSkeleton />
+                    <StatsSkeleton />
+                    <StatsSkeleton />
+                  </>
+                ) : (
+                  <>
+                    <div className="bg-gray-900 p-5 rounded-2xl relative overflow-hidden group hover:bg-gray-800/50 transition-all shadow-lg border border-gray-800">
+                      <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <CircleDollarSign size={40} />
+                      </div>
+                      <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-2">Total Raised</p>
+                      <p className="text-2xl font-black text-utonga-accent">${stats?.total_raised?.toLocaleString() || '0'}</p>
+                      <div className="mt-3 flex items-center text-gray-600 text-[9px] font-bold uppercase tracking-tighter">
+                        <span>Verified Ledger</span>
+                      </div>
+                    </div>
 
-                <div className="bg-gray-900 p-5 rounded-2xl relative overflow-hidden group hover:bg-gray-800/50 transition-all shadow-lg">
-                  <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
-                    <CalendarDays size={40} />
-                  </div>
-                  <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-2">Pending Bookings</p>
-                  <p className="text-2xl font-black">{stats?.pending_bookings || '0'}</p>
-                  <Link to="/staff/dashboard/bookings" className="mt-3 block text-[10px] font-black uppercase tracking-widest text-utonga-accent hover:underline">Manage →</Link>
-                </div>
+                    <div className="bg-gray-900 p-5 rounded-2xl relative overflow-hidden group hover:bg-gray-800/50 transition-all shadow-lg border border-gray-800">
+                      <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <CalendarDays size={40} />
+                      </div>
+                      <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-2">Pending Bookings</p>
+                      <p className="text-2xl font-black">{stats?.pending_bookings || '0'}</p>
+                      <Link to="/staff/dashboard/bookings" className="mt-3 block text-[10px] font-black uppercase tracking-widest text-utonga-accent hover:underline">Manage →</Link>
+                    </div>
 
-                <div className="bg-gray-900 p-5 rounded-2xl relative overflow-hidden group hover:bg-gray-800/50 transition-all shadow-lg">
-                  <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
-                    <Users size={40} />
-                  </div>
-                  <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-2">New Pipeline Leads</p>
-                  <p className="text-2xl font-black">{stats?.new_leads || '0'}</p>
-                  <Link to="/staff/dashboard/leads" className="mt-3 block text-[10px] font-black uppercase tracking-widest text-utonga-accent hover:underline">View CRM →</Link>
-                </div>
+                    <div className="bg-gray-900 p-5 rounded-2xl relative overflow-hidden group hover:bg-gray-800/50 transition-all shadow-lg border border-gray-800">
+                      <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <Users size={40} />
+                      </div>
+                      <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-2">New Pipeline Leads</p>
+                      <p className="text-2xl font-black">{stats?.new_leads || '0'}</p>
+                      <Link to="/staff/dashboard/leads" className="mt-3 block text-[10px] font-black uppercase tracking-widest text-utonga-accent hover:underline">View CRM →</Link>
+                    </div>
 
-                <div className="bg-gray-900 p-5 rounded-2xl relative overflow-hidden group hover:bg-gray-800/50 transition-all shadow-lg">
-                  <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
-                    <Settings size={40} />
-                  </div>
-                  <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-2">System Status</p>
-                  <p className="text-2xl font-black text-utonga-green">ONLINE</p>
-                  <p className="mt-3 text-[10px] font-black text-gray-600 uppercase tracking-widest">v1.2.4</p>
-                </div>
+                    <div className="bg-gray-900 p-5 rounded-2xl relative overflow-hidden group hover:bg-gray-800/50 transition-all shadow-lg border border-gray-800">
+                      <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <Settings size={40} />
+                      </div>
+                      <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-2">System Status</p>
+                      <p className="text-2xl font-black text-utonga-green">ONLINE</p>
+                      <p className="mt-3 text-[10px] font-black text-gray-600 uppercase tracking-widest">v1.2.4</p>
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className="bg-gray-900 rounded-2xl p-6 shadow-lg">
@@ -157,11 +169,19 @@ const AdminDashboard = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-800/50">
-                      <tr className="text-xs">
-                        <td className="py-12 text-gray-600 text-center uppercase tracking-widest font-black" colSpan="5">
-                          No recent transactions detected
-                        </td>
-                      </tr>
+                      {!stats ? (
+                        <>
+                          <TableRowSkeleton cols={5} />
+                          <TableRowSkeleton cols={5} />
+                          <TableRowSkeleton cols={5} />
+                        </>
+                      ) : (
+                        <tr className="text-xs">
+                          <td className="py-12 text-gray-600 text-center uppercase tracking-widest font-black" colSpan="5">
+                            No recent transactions detected
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>

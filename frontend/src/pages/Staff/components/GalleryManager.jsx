@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../../../api';
 import { Upload, Image as ImageIcon, Trash2, Edit2 } from 'lucide-react';
 import UploadModal from './UploadModal';
+import { GallerySkeleton } from './Skeleton';
 
 const GalleryManager = () => {
   const [images, setImages] = useState([]);
@@ -55,7 +56,9 @@ const GalleryManager = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
         {loading ? (
-          <div className="col-span-full text-center py-20 text-gray-500 italic uppercase tracking-widest text-[10px] font-black">Accessing vault...</div>
+          <>
+            {[1,2,3,4,5,6,7,8,9,10,11,12].map(i => <GallerySkeleton key={i} />)}
+          </>
         ) : images.length > 0 ? images.map((img) => (
           <div key={img.id} className="group bg-gray-900 rounded-xl overflow-hidden hover:bg-gray-800/50 transition-all shadow-lg">
             <div className="relative aspect-square bg-black overflow-hidden">

@@ -33,8 +33,8 @@ const GalleryGrid = () => {
 
   useEffect(() => {
     const fetchImages = async () => {
-      // ONLY the specific Wildlife Collection you requested (All old landscapes purged)
-      const wildlifeDefaults = [
+      // DEFINITIVE HIGH-FIDELITY WILDLIFE COLLECTION
+      const wildlifeOnly = [
         { title: "Butterfly Sanctuary", category: "Biodiversity", img: "https://images.unsplash.com/photo-1598207981454-d849f4ac3a9e?q=70&w=1800" },
         { title: "African Porcupine", category: "Wildlife", img: "https://images.unsplash.com/photo-1776509545709-78aa6c9fa5bc?q=70&w=1200" },
         { title: "Indigenous Hippo", category: "Wetland", img: "https://plus.unsplash.com/premium_photo-1661963467008-cc311b4a98ca?q=70&w=1800" },
@@ -45,16 +45,20 @@ const GalleryGrid = () => {
 
       try {
         const res = await api.get('/api/gallery/');
-        // If the backend has images (e.g. from seed or manual upload),
-        // we ONLY use those and wildlifeDefaults. We NEVER show the old landscapes.
+        // We filter out ANY image that isn't from our new wildlife set or a fresh user upload
+        // This ensures old "Forest/Lake" images seeded in the DB are IGNORED
         if (Array.isArray(res.data) && res.data.length > 0) {
-          setImages([...res.data, ...wildlifeDefaults]);
+          const userUploads = res.data.filter(img =>
+            !img.image_key?.includes('photo-1441974231531') && // Old Forest
+            !img.image_key?.includes('photo-1501785888041') && // Old Wetland
+            !img.image_key?.includes('photo-1544198365-f5d')    // Old Hippo
+          );
+          setImages([...userUploads, ...wildlifeOnly]);
         } else {
-          setImages(wildlifeDefaults);
+          setImages(wildlifeOnly);
         }
       } catch (err) {
-        console.error('Gallery sync error:', err);
-        setImages(wildlifeDefaults); // Fallback only to the wildlife collection
+        setImages(wildlifeOnly);
       }
     };
 

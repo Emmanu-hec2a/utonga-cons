@@ -1,0 +1,11 @@
+# Utonga Conservation Robots Configuration
+# Optimized for high-visibility and security
+
+User-agent: *
+Allow: /
+Disallow: /staff/
+Disallow: /admin/
+Disallow: /api/
+
+# Point crawlers to our dynamic sitemap
+Sitemap: https://utonga-cons.utonga.workers.dev/sitemap.xml

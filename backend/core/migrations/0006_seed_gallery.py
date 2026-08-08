@@ -19,7 +19,7 @@ def seed_gallery(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('core', '0005_calllog'), # Ensure this matches your last migration
+        ('core', '0005_roadmapmilestone_description'), # Corrected to existing parent node
     ]
 
     operations = [

@@ -23,7 +23,7 @@ const BookingManager = () => {
     };
 
     fetchBookings();
-    const interval = setInterval(fetchBookings, 45000);
+    const interval = setInterval(fetchBookings, 90000);
     return () => clearInterval(interval);
   }, []);
 

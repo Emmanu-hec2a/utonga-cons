@@ -20,8 +20,8 @@ const LeadList = () => {
     };
 
     fetchLeads();
-    // Poll every 60 seconds for new partner inquiries
-    const interval = setInterval(fetchLeads, 60000);
+    // Poll every 120 seconds for new partner inquiries
+    const interval = setInterval(fetchLeads, 120000);
     return () => clearInterval(interval);
   }, []);
 

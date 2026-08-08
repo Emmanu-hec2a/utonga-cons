@@ -35,6 +35,8 @@ class GalleryImageSerializer(serializers.ModelSerializer):
     def get_image_url(self, obj):
         if obj.image:
             return obj.image.url
+        if obj.image_key and obj.image_key.startswith('http'):
+            return obj.image_key
         return None
 
 class DonationSerializer(serializers.ModelSerializer):

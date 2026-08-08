@@ -4,7 +4,7 @@ from knox import views as knox_views
 from .views import (
     CampaignView, GalleryListView, BookingCreateView,
     PartnerLeadCreateView, VolunteerSignupCreateView, initiate_donation,
-    paystack_webhook, RoadmapListView, SettingsListView,
+    get_donation_status, verify_donation_manually, paystack_webhook, ai_chat, RoadmapListView, SettingsListView,
     initiate_call, telephony_connect_visitor, telephony_status_callback
 )
 from .admin_views import (
@@ -33,7 +33,10 @@ urlpatterns = [
     path('partner-leads/', PartnerLeadCreateView.as_view(), name='partner-lead-create'),
     path('volunteer-signups/', VolunteerSignupCreateView.as_view(), name='volunteer-signup-create'),
     path('donations/initiate/', initiate_donation, name='donation-initiate'),
+    path('donations/<int:donation_id>/status/', get_donation_status, name='donation-status'),
+    path('donations/<int:donation_id>/verify/', verify_donation_manually, name='donation-verify-manual'),
     path('settings/', SettingsListView.as_view(), name='settings-list'),
+    path('ai/chat/', ai_chat, name='ai-chat'),
     path('webhooks/paystack/', paystack_webhook, name='paystack-webhook'),
     
     # Admin endpoints

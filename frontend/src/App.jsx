@@ -10,8 +10,10 @@ import Roadmap from './pages/Roadmap';
 import Visit from './pages/Visit';
 import Partner from './pages/Partner';
 import GetInvolved from './pages/GetInvolved';
+import Legal from './pages/Legal';
 import Footer from './components/Footer';
 import ScrollToTopButton from './components/ScrollToTopButton';
+import UtongaAssistant from './components/UtongaAssistant';
 
 // Staff Pages
 import StaffLogin from './pages/Staff/Login';
@@ -42,6 +44,7 @@ const MainLayout = ({ children }) => (
     <main>{children}</main>
     <Footer />
     <ScrollToTopButton />
+    <UtongaAssistant />
   </div>
 );
 
@@ -68,6 +71,10 @@ function AppRoutes() {
 
       {/* Redirect old admin paths */}
       <Route path="/admin/*" element={<Navigate to="/staff/login" />} />
+
+      {/* Legal Routes */}
+      <Route path="/privacy" element={<Legal />} />
+      <Route path="/terms" element={<Legal />} />
     </Routes>
   );
 }

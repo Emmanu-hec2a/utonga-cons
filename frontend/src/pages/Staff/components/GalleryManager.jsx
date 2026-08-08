@@ -11,8 +11,8 @@ const GalleryManager = () => {
 
   useEffect(() => {
     fetchImages();
-    // Sync gallery every 2 minutes (media changes are less frequent)
-    const interval = setInterval(fetchImages, 120000);
+    // Sync gallery every 5 minutes (media changes are less frequent)
+    const interval = setInterval(fetchImages, 300000);
     return () => clearInterval(interval);
   }, []);
 
@@ -39,6 +39,21 @@ const GalleryManager = () => {
     }
   };
 
+  const getImgUrl = (img, width = 800) => {
+    let url = img.image_url || (img.image_key?.startsWith('http') ? img.image_key : `https://r2-placeholder.com/${img.image_key}`);
+    if (url && url.includes('images.unsplash.com')) {
+      if (url.includes('w=')) {
+        url = url.replace(/w=\d+/, `w=${width}`);
+      } else {
+        url += `&w=${width}`;
+      }
+      if (width <= 800 && url.includes('q=')) {
+        url = url.replace(/q=\d+/, 'q=60');
+      }
+    }
+    return url;
+  };
+
   return (
     <div className="space-y-6 relative">
       <div className="flex justify-between items-end">
@@ -63,7 +78,7 @@ const GalleryManager = () => {
           <div key={img.id} className="group bg-gray-900 rounded-xl overflow-hidden hover:bg-gray-800/50 transition-all shadow-lg">
             <div className="relative aspect-square bg-black overflow-hidden">
               <img
-                src={img.image_url || img.image || `https://r2-placeholder.com/${img.image_key}`}
+                src={getImgUrl(img, 400)}
                 alt={img.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />

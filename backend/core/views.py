@@ -129,17 +129,94 @@ def paystack_webhook(request):
     if computed_hmac != signature:
         return Response({'error': 'Invalid signature'}, status=status.HTTP_400_BAD_REQUEST)
 
-    from .tasks import process_payment_webhook
-    process_payment_webhook.delay('paystack', json.loads(payload.decode('utf-8')))
+    data = json.loads(payload.decode('utf-8'))
+    event = data.get('event')
+    
+    if event == 'charge.success':
+        payment_data = data.get('data', {})
+        reference = payment_data.get('reference')
+        try:
+            donation = Donation.objects.get(provider_reference=reference)
+            donation.status = 'completed'
+            donation.save()
+            # If celery is running, send receipt
+            try:
+                from .tasks import send_receipt_email
+                send_receipt_email.delay(donation.id)
+            except Exception:
+                pass
+        except Donation.DoesNotExist:
+            pass
+
     return Response({'status': 'success'})
+
+from .ai_service import UtongaAIService
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def ai_chat(request):
+    message = request.data.get('message')
+    history = request.data.get('history', [])
+    
+    if not message:
+        return Response({'error': 'Message required'}, status=400)
+        
+    ai = UtongaAIService()
+    response = ai.get_response(message, history)
+    
+    return Response({'response': response})
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_donation_status(request, donation_id):
+    from .models import Donation
+    from .serializers import DonationSerializer
+    donation = get_object_or_404(Donation, id=donation_id)
+    serializer = DonationSerializer(donation)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def verify_donation_manually(request, donation_id):
+    """
+    Manually verify a donation by checking with Paystack API.
+    Useful for local development or resolving webhook failures.
+    """
+    donation = get_object_or_404(Donation, id=donation_id)
+    
+    if not donation.provider_reference:
+        return Response({'error': 'No provider reference found'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        headers = {
+            "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}",
+        }
+        # Paystack verify endpoint
+        response = requests.get(
+            f"https://api.paystack.co/transaction/verify/{donation.provider_reference}",
+            headers=headers
+        )
+        res_data = response.json()
+
+        if res_data.get('status') and res_data['data'].get('status') == 'success':
+            donation.status = 'completed'
+            donation.save()
+            return Response({'status': 'success', 'message': 'Donation verified and completed'})
+        else:
+            return Response({'error': 'Payment not verified by provider'}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+from .currency_service import CurrencyService
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def initiate_donation(request):
     amount = request.data.get('amount')
-    method = request.data.get('method') # card, mpesa, etc.
+    method = request.data.get('method') # card, mpesa, mobile_money, etc.
     email = request.data.get('donor_email')
     name = request.data.get('donor_name')
+    phone = request.data.get('phone_number', '')
 
     if not all([amount, method, email, name]):
         return Response({'error': 'Missing required fields'}, status=status.HTTP_400_BAD_REQUEST)
@@ -155,24 +232,47 @@ def initiate_donation(request):
 
     domain = getattr(settings, 'UTONGA_PRIMARY_DOMAIN', 'https://utongoconservation.org')
 
-    # All methods (Card, M-Pesa, etc.) handled by Paystack
-    try:
+    # Core Logic: Live Global Currency Engine
+    def initialize_transaction(target_currency, target_amount, channels, is_fallback=False):
         headers = {
             "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}",
             "Content-Type": "application/json"
         }
+        
         data = {
             "email": email,
-            "amount": int(amount * 100),
-            "reference": f"UTG_{donation.id}_{int(timezone.now().timestamp())}",
+            "amount": target_amount,
+            "currency": target_currency,
+            "channels": channels,
+            "reference": f"UTG_{donation.id}_{int(timezone.now().timestamp())}{'_FB' if is_fallback else ''}",
             "callback_url": f"{domain}/give?status=success&id={donation.id}",
-            "metadata": {"donation_id": donation.id}
+            "metadata": {
+                "donation_id": donation.id,
+                "original_amount_usd": amount,
+                "is_fallback": is_fallback
+            }
         }
+        return requests.post("https://api.paystack.co/transaction/initialize", json=data, headers=headers)
+
+    try:
+        # Step 1: Handle Mobile Money (Dynamic Conversion)
+        if method in ['mpesa', 'mobile_money']:
+            conv = CurrencyService.convert_to_local(amount, phone)
+            response = initialize_transaction(conv['currency'], conv['amount'], ["mobile_money", "card"])
         
-        response = requests.post("https://api.paystack.co/transaction/initialize", json=data, headers=headers)
+        # Step 2: Handle Cards/Bank/QR (USD First with KES Fallback)
+        else:
+            response = initialize_transaction("USD", int(amount * 100), ["card", "bank", "ussd", "qr"])
+            res_data = response.json()
+            
+            # If USD is not yet supported by merchant, fallback to KES
+            if not res_data.get('status') and "Currency not supported" in res_data.get('message', ''):
+                conv_kes = CurrencyService.convert_to_local(amount, "254") # Default KES fallback
+                response = initialize_transaction("KES", conv_kes['amount'], ["card", "bank", "ussd", "qr"], is_fallback=True)
+
         res_data = response.json()
-        
-        if res_data['status']:
+
+        if res_data.get('status'):
             donation.provider_reference = res_data['data']['reference']
             donation.save()
             return Response({
@@ -180,7 +280,8 @@ def initiate_donation(request):
                 'checkout_url': res_data['data']['authorization_url']
             })
         else:
-            return Response({'error': res_data['message']}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': res_data.get('message', 'Initialization Failed')}, status=status.HTTP_400_BAD_REQUEST)
+
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

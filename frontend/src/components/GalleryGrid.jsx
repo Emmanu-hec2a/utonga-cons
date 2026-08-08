@@ -12,44 +12,24 @@ const GalleryGrid = () => {
     slide: 1
   });
 
-  const defaultImages = [
-    {
-      title: "Forest Trail",
-      category: "Restoration",
-      img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2071",
-      alt: "A lush indigenous tropical forest trail in Utonga"
-    },
-    {
-      title: "Wetland Sanctuary",
-      category: "Biodiversity",
-      img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070",
-      alt: "Wetland area on the shores of Lake Victoria"
-    },
-    {
-      title: "Hippo Point",
-      category: "Wildlife",
-      img: "https://images.unsplash.com/photo-1544198365-f5d60b6d8190?q=80&w=2070",
-      alt: "A view of the lake where hippos frequently gather"
-    },
-    {
-      title: "Botanical Garden",
-      category: "Preservation",
-      img: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=1932",
-      alt: "Sitatunga Botanical Garden flowers and flora"
-    },
-    {
-      title: "Camp Site",
-      category: "Visitor Experience",
-      img: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=2070",
-      alt: "Serene camping spot overlooking the forest"
-    },
-    {
-      title: "Lakeside Sunset",
-      category: "Environment",
-      img: "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?q=80&w=2070",
-      alt: "Sunset over Lake Victoria"
+  const getImgUrl = (img, width = 800) => {
+    let url = img.img || img.image_url || (img.image_key?.startsWith('http') ? img.image_key : `https://r2-placeholder.com/${img.image_key}`);
+
+    // Apply dynamic width for Unsplash optimization if it's an Unsplash URL
+    if (url && url.includes('images.unsplash.com')) {
+      // Replace existing width parameter or append it
+      if (url.includes('w=')) {
+        url = url.replace(/w=\d+/, `w=${width}`);
+      } else {
+        url += `&w=${width}`;
+      }
+      // Ensure high-performance quality for thumbnails
+      if (width <= 800 && url.includes('q=')) {
+        url = url.replace(/q=\d+/, 'q=60');
+      }
     }
-  ];
+    return url;
+  };
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -57,6 +37,16 @@ const GalleryGrid = () => {
         const res = await api.get('/api/gallery/');
         if (Array.isArray(res.data) && res.data.length > 0) {
           setImages(res.data);
+        } else {
+          // Fallback to defaults if backend is empty
+          setImages([
+            { title: "Forest Trail", category: "Restoration", img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2071" },
+            { title: "Wetland Sanctuary", category: "Biodiversity", img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070" },
+            { title: "Hippo Point", category: "Wildlife", img: "https://images.unsplash.com/photo-1544198365-f5d60b6d8190?q=80&w=2070" },
+            { title: "Botanical Garden", category: "Preservation", img: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=1932" },
+            { title: "Camp Site", category: "Visitor Experience", img: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=2070" },
+            { title: "Lakeside Sunset", category: "Environment", img: "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?q=80&w=2070" }
+          ]);
         }
       } catch (err) {
         console.error('Gallery sync error:', err);
@@ -68,10 +58,7 @@ const GalleryGrid = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const displayImages = images.length > 0 ? images : defaultImages;
-
   const openLightboxOnSlide = (number) => {
-    // We use a separate toggle to ensure it always fires
     setLightboxController(prev => ({
       toggler: !prev.toggler,
       slide: number
@@ -100,7 +87,7 @@ const GalleryGrid = () => {
 
         {/* Stable Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {displayImages.map((img, i) => (
+          {images.map((img, i) => (
             <div
               key={i}
               className="relative group aspect-[4/3] overflow-hidden rounded-[2rem] bg-gray-900 border border-gray-800 hover:border-utonga-accent focus:outline-none focus:ring-2 focus:ring-utonga-accent transition-all cursor-pointer z-10"
@@ -111,12 +98,11 @@ const GalleryGrid = () => {
               aria-label={`View full size photo: ${img.title} - ${img.category}`}
             >
               <img
-                src={img.img || img.image || `https://r2-placeholder.com/${img.image_key}`}
+                src={getImgUrl(img, 800)}
                 alt={img.alt || `${img.title} - ${img.category} in Utonga Sanctuary`}
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 pointer-events-none"
                 loading="lazy"
               />
-              {/* High-Fidelity Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8 pointer-events-none">
                 <p className="text-utonga-accent text-[10px] font-black uppercase tracking-[0.2em] mb-2">
                   {img.category || "Sanctuary"}
@@ -130,11 +116,13 @@ const GalleryGrid = () => {
         </div>
       </div>
 
-      <Lightbox
-        toggler={lightboxController.toggler}
-        sources={displayImages.map(d => d.img || d.image || `https://r2-placeholder.com/${d.image_key}`)}
-        slide={lightboxController.slide}
-      />
+      {images.length > 0 && (
+        <Lightbox
+          toggler={lightboxController.toggler}
+          sources={images.map(img => getImgUrl(img, 2000))}
+          slide={lightboxController.slide}
+        />
+      )}
     </section>
   );
 };

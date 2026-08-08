@@ -30,8 +30,8 @@ const AdminDashboard = () => {
     };
 
     fetchStats();
-    // Poll every 30 seconds for real-time feeling without excessive server load
-    const interval = setInterval(fetchStats, 30000);
+    // Poll every 90 seconds for real-time feeling without excessive server load
+    const interval = setInterval(fetchStats, 90000);
     return () => clearInterval(interval);
   }, []);
 
@@ -41,53 +41,61 @@ const AdminDashboard = () => {
   };
 
   const navItems = [
-    { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/staff/dashboard' },
-    { name: 'Donations', icon: <CircleDollarSign size={20} />, path: '/staff/dashboard/donations' },
-    { name: 'Bookings', icon: <CalendarDays size={20} />, path: '/staff/dashboard/bookings' },
-    { name: 'Roadmap', icon: <Map size={20} />, path: '/staff/dashboard/roadmap' },
-    { name: 'Leads', icon: <Users size={20} />, path: '/staff/dashboard/leads' },
-    { name: 'Gallery', icon: <Image size={20} />, path: '/staff/dashboard/gallery' },
-    { name: 'Settings', icon: <Settings size={20} />, path: '/staff/dashboard/settings' },
+    { name: 'Dashboard', icon: <LayoutDashboard size={22} />, path: '/staff/dashboard' },
+    { name: 'Donations', icon: <CircleDollarSign size={22} />, path: '/staff/dashboard/donations' },
+    { name: 'Bookings', icon: <CalendarDays size={22} />, path: '/staff/dashboard/bookings' },
+    { name: 'Roadmap', icon: <Map size={22} />, path: '/staff/dashboard/roadmap' },
+    { name: 'Leads', icon: <Users size={22} />, path: '/staff/dashboard/leads' },
+    { name: 'Gallery', icon: <Image size={22} />, path: '/staff/dashboard/gallery' },
+    { name: 'Settings', icon: <Settings size={22} />, path: '/staff/dashboard/settings' },
   ];
 
   return (
     <div className="flex min-h-screen bg-gray-950 text-white font-sans">
       {/* Sidebar */}
-      <aside className="w-60 bg-gray-900 border-r border-gray-800 flex flex-col fixed h-full">
-        <div className="p-6">
-          <Link to="/" className="text-xl font-bold tracking-tighter">
+      <aside className="w-64 bg-gray-900 border-r border-gray-800 flex flex-col fixed h-full shadow-2xl">
+        <div className="p-8">
+          <Link to="/" className="text-2xl font-black tracking-tighter">
             UTONGA<span className="text-utonga-accent">.</span> STAFF
           </Link>
-          <div className="mt-3 flex items-center space-x-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-            <span className="text-[9px] uppercase tracking-widest text-gray-500 font-black">Admin: {user?.username}</span>
+          <div className="mt-4 flex items-center space-x-2 bg-black/30 w-fit px-3 py-1.5 rounded-full border border-white/5">
+            <div className="w-1.5 h-1.5 rounded-full bg-utonga-green animate-pulse shadow-[0_0_8px_#87A66E]"></div>
+            <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Admin: {user?.username}</span>
           </div>
         </div>
-        <nav className="flex-1 px-3 space-y-1 mt-2">
+
+        <nav className="flex-1 px-4 space-y-2 mt-4">
           {navItems.map(item => (
             <Link
               key={item.name}
               to={item.path}
-              className={`flex items-center px-4 py-2.5 rounded-xl transition-all duration-200 ${location.pathname === item.path ? 'bg-utonga-green text-white shadow-lg shadow-utonga-green/20' : 'text-gray-500 hover:bg-gray-800 hover:text-white'}`}
+              className={`flex items-center px-5 py-4 rounded-2xl transition-all duration-300 group ${
+                location.pathname === item.path
+                ? 'bg-utonga-green text-white shadow-lg shadow-utonga-green/20'
+                : 'text-gray-500 hover:bg-gray-800/50 hover:text-white'
+              }`}
             >
-              <span className="mr-3">{item.icon}</span>
-              <span className="font-bold text-xs">{item.name}</span>
+              <span className={`mr-4 transition-transform group-hover:scale-110 ${location.pathname === item.path ? 'text-white' : 'text-gray-600 group-hover:text-utonga-accent'}`}>
+                {item.icon}
+              </span>
+              <span className="font-bold text-sm tracking-wide">{item.name}</span>
             </Link>
           ))}
         </nav>
-        <div className="p-6 border-t border-gray-800">
+
+        <div className="p-8 border-t border-gray-800/50">
           <button
             onClick={handleLogout}
-            className="flex items-center text-gray-500 hover:text-red-400 w-full px-4 py-3 rounded-xl hover:bg-red-500/5 transition-all"
+            className="flex items-center text-gray-500 hover:text-red-400 w-full px-5 py-4 rounded-2xl hover:bg-red-500/5 transition-all group"
           >
-            <LogOut size={20} className="mr-3" />
+            <LogOut size={22} className="mr-4 group-hover:-translate-x-1 transition-transform" />
             <span className="font-bold text-sm">Logout</span>
           </button>
         </div>
       </aside>
 
       {/* Content */}
-      <main className="flex-1 ml-60 p-6 overflow-y-auto min-h-screen">
+      <main className="flex-1 ml-64 p-6 overflow-y-auto min-h-screen">
         <Routes>
           <Route path="/" element={
             <div className="space-y-6">

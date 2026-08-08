@@ -169,6 +169,7 @@ DEFAULT_FROM_EMAIL = RESEND_FROM_EMAIL
 
 # Payment Gateway Configuration
 UTONGA_PRIMARY_DOMAIN = os.environ.get('UTONGA_PRIMARY_DOMAIN', 'http://localhost:5173')
+PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', 'sk_test_4632becfcca3850cfca91878e93c42f1b0122086')
 
 # Telephony Configuration
 UTONGA_API_DOMAIN = os.environ.get('UTONGA_API_DOMAIN', 'http://localhost:8000')

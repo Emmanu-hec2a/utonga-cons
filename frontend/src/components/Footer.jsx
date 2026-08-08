@@ -45,16 +45,18 @@ const Footer = () => {
                 {settings.contact_email || 'hello@utonga.org'}
               </li>
               <li className="text-xs leading-relaxed opacity-80">
-                Sitatunga Botanical Garden, Entebbe, Uganda
+                Sitatunga Botanical Garden, Bondo, Siaya - Kenya
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-white font-bold mb-6">Transparency</h4>
+            <h4 className="text-white font-bold mb-6 italic uppercase tracking-wider text-xs">Transparency</h4>
             <ul className="space-y-4 text-gray-400 text-sm">
-              <li><a href="#" className="hover:text-utonga-accent">Annual Reports</a></li>
-              <li><a href="#" className="hover:text-utonga-accent">Audit Logs</a></li>
+              <li><Link to="/roadmap" className="hover:text-utonga-accent">Live Roadmap</Link></li>
+              <li><Link to="/explore" className="hover:text-utonga-accent">Impact Gallery</Link></li>
+              <li><Link to="/privacy" className="hover:text-utonga-accent">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="hover:text-utonga-accent">Terms of Service</Link></li>
             </ul>
           </div>
         </div>

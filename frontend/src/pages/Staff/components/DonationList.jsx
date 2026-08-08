@@ -21,8 +21,8 @@ const DonationList = () => {
     };
 
     fetchDonations();
-    // Real-time sync every 20 seconds for the ledger
-    const interval = setInterval(fetchDonations, 20000);
+    // Real-time sync every 60 seconds for the ledger
+    const interval = setInterval(fetchDonations, 60000);
     return () => clearInterval(interval);
   }, []);
 
@@ -36,6 +36,16 @@ const DonationList = () => {
       case 'completed': return <CheckCircle className="text-utonga-green" size={16} />;
       case 'failed': return <XCircle className="text-red-500" size={16} />;
       default: return <AlertCircle className="text-utonga-accent" size={16} />;
+    }
+  };
+
+  const verifyManually = async (id) => {
+    try {
+      await api.post(`/api/donations/${id}/verify/`);
+      fetchDonations(); // Refresh list
+    } catch (err) {
+      console.error('Manual verification failed:', err);
+      alert('Payment could not be verified by Paystack yet.');
     }
   };
 
@@ -105,6 +115,14 @@ const DonationList = () => {
                   <div className="flex items-center gap-2">
                     {getStatusIcon(d.status)}
                     <span className="text-[10px] font-bold uppercase tracking-tight">{d.status}</span>
+                    {d.status === 'pending' && (
+                      <button
+                        onClick={() => verifyManually(d.id)}
+                        className="ml-2 text-[8px] bg-utonga-accent/10 text-utonga-accent border border-utonga-accent/20 px-2 py-0.5 rounded hover:bg-utonga-accent hover:text-black transition-all font-black uppercase cursor-pointer"
+                      >
+                        Verify
+                      </button>
+                    )}
                   </div>
                 </td>
                 <td className="px-6 py-4 text-right text-gray-500 font-bold font-mono">

@@ -23,8 +23,8 @@ const RoadmapManager = () => {
 
   useEffect(() => {
     fetchMilestones();
-    // Poll every 60 seconds for roadmap updates
-    const interval = setInterval(fetchMilestones, 60000);
+    // Poll every 3 minutes for roadmap updates
+    const interval = setInterval(fetchMilestones, 180000);
     return () => clearInterval(interval);
   }, []);
 

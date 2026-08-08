@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Utonga Sanctuary</title>
+    <script type="text/javascript">
+      // This script will redirect to index.html while preserving the original URL path
+      // allowing React Router to take over.
+      var path = window.location.pathname;
+      var search = window.location.search;
+      var hash = window.location.hash;
+      window.location.replace('/' + (path.startsWith('/') ? path.substring(1) : path) + search + hash);
+    </script>
+  </head>
+  <body>
+    Redirecting to Utonga Sanctuary...
+  </body>
+</html>

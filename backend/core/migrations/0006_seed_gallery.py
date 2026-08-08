@@ -3,19 +3,20 @@ from django.db import migrations
 def seed_gallery(apps, schema_editor):
     GalleryImage = apps.get_model('core', 'GalleryImage')
     
-    # Only seed if the gallery is empty
-    if GalleryImage.objects.count() == 0:
-        images = [
-            { "title": "Forest Trail", "category": "trail", "image_key": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2071", "order": 1 },
-            { "title": "Wetland Sanctuary", "category": "wetland", "image_key": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070", "order": 2 },
-            { "title": "Hippo Point", "category": "hippo", "image_key": "https://images.unsplash.com/photo-1544198365-f5d60b6d8190?q=80&w=2070", "order": 3 },
-            { "title": "Botanical Garden", "category": "garden", "image_key": "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=1932", "order": 4 },
-            { "title": "Camp Site", "category": "camp", "image_key": "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=2070", "order": 5 },
-            { "title": "Lakeside Sunset", "category": "wetland", "image_key": "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?q=80&w=2070", "order": 6 }
-        ]
-        
-        for img in images:
-            GalleryImage.objects.create(**img)
+    # Clean out any old legacy images first to ensure a clean wildlife collection
+    GalleryImage.objects.all().delete()
+
+    images = [
+        { "title": "Butterfly Sanctuary", "category": "trail", "image_key": "https://images.unsplash.com/photo-1598207981454-d849f4ac3a9e?q=70&w=1800", "order": 1 },
+        { "title": "African Porcupine", "category": "hippo", "image_key": "https://images.unsplash.com/photo-1776509545709-78aa6c9fa5bc?q=70&w=1200", "order": 2 },
+        { "title": "Indigenous Hippo", "category": "hippo", "image_key": "https://plus.unsplash.com/premium_photo-1661963467008-cc311b4a98ca?q=70&w=1800", "order": 3 },
+        { "title": "Black Ants Trail", "category": "trail", "image_key": "https://plus.unsplash.com/premium_photo-1722811376945-2ee83126ffe6?q=70&w=1800", "order": 4 },
+        { "title": "Guinea Fowl", "category": "hippo", "image_key": "https://images.unsplash.com/photo-1705723119182-054121c14b85?q=70&w=1200", "order": 5 },
+        { "title": "Forest Monkey", "category": "trail", "image_key": "https://images.unsplash.com/photo-1570275887572-34b431333fec?q=70&w=1800", "order": 6 }
+    ]
+    
+    for img in images:
+        GalleryImage.objects.create(**img)
 
 class Migration(migrations.Migration):
     dependencies = [

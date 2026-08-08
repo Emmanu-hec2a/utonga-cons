@@ -51,7 +51,10 @@ const GalleryGrid = () => {
           const userUploads = res.data.filter(img =>
             !img.image_key?.includes('photo-1441974231531') && // Old Forest
             !img.image_key?.includes('photo-1501785888041') && // Old Wetland
-            !img.image_key?.includes('photo-1544198365-f5d')    // Old Hippo
+            !img.image_key?.includes('photo-1544198365-f5d') && // Old Hippo
+            !img.image_key?.includes('photo-1585320806297') && // Old Botanical
+            !img.image_key?.includes('photo-1504280390367') && // Old Camp
+            !img.image_key?.includes('photo-1532274402911')    // Old Lakeside
           );
           setImages([...userUploads, ...wildlifeOnly]);
         } else {

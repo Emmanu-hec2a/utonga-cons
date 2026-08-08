@@ -1,0 +1,3 @@
+web: gunicorn utonga_backend.wsgi --log-file -
+worker: celery -A utonga_backend worker --loglevel=info -P solo
+beat: celery -A utonga_backend beat --loglevel=info

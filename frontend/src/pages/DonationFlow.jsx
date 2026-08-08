@@ -22,6 +22,8 @@ const DonationFlow = () => {
     if (status === 'success' && id) {
       setStep(4);
       fetchLiveDonationStatus(id);
+      // Clean up the URL to maintain high-fidelity look
+      window.history.replaceState({}, document.title, window.location.pathname + '?status=success&id=' + id);
     }
   }, [searchParams]);
 

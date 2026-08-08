@@ -33,8 +33,8 @@ const GalleryGrid = () => {
 
   useEffect(() => {
     const fetchImages = async () => {
-      // Permanent Wildlife Sanctuary Images (Frontend Hardcoded Defaults)
-      const defaultImages = [
+      // ONLY the specific Wildlife Collection you requested (All old landscapes purged)
+      const wildlifeDefaults = [
         { title: "Butterfly Sanctuary", category: "Biodiversity", img: "https://images.unsplash.com/photo-1598207981454-d849f4ac3a9e?q=70&w=1800" },
         { title: "African Porcupine", category: "Wildlife", img: "https://images.unsplash.com/photo-1776509545709-78aa6c9fa5bc?q=70&w=1200" },
         { title: "Indigenous Hippo", category: "Wetland", img: "https://plus.unsplash.com/premium_photo-1661963467008-cc311b4a98ca?q=70&w=1800" },
@@ -45,15 +45,16 @@ const GalleryGrid = () => {
 
       try {
         const res = await api.get('/api/gallery/');
+        // If the backend has images (e.g. from seed or manual upload),
+        // we ONLY use those and wildlifeDefaults. We NEVER show the old landscapes.
         if (Array.isArray(res.data) && res.data.length > 0) {
-          // Dynamic merge: New uploads show first, followed by wildlife defaults
-          setImages([...res.data, ...defaultImages]);
+          setImages([...res.data, ...wildlifeDefaults]);
         } else {
-          setImages(defaultImages);
+          setImages(wildlifeDefaults);
         }
       } catch (err) {
         console.error('Gallery sync error:', err);
-        setImages(defaultImages); // Safety fallback
+        setImages(wildlifeDefaults); // Fallback only to the wildlife collection
       }
     };
 

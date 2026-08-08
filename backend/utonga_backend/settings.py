@@ -155,9 +155,17 @@ REST_KNOX = {
 }
 
 # CSRF Configuration for local dev
-CSRF_TRUSTED_ORIGINS = ['http://localhost:5173', 'https://utonga-cons.utonga.workers.dev']
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173', 
+    'https://utonga-cons.utonga.workers.dev',
+    'https://utonga-cons.up.railway.app'
+]
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ['http://localhost:5173', 'https://utonga-cons.utonga.workers.dev']
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173', 
+    'https://utonga-cons.utonga.workers.dev',
+    'https://utonga-cons.up.railway.app'
+]
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_HTTPONLY = True
@@ -173,7 +181,7 @@ UTONGA_PRIMARY_DOMAIN = os.environ.get('UTONGA_PRIMARY_DOMAIN', 'http://localhos
 PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', 'sk_test_4632becfcca3850cfca91878e93c42f1b0122086')
 
 # Telephony Configuration
-UTONGA_API_DOMAIN = os.environ.get('UTONGA_API_DOMAIN', 'http://localhost:8000')
+UTONGA_API_DOMAIN = os.environ.get('UTONGA_API_DOMAIN', 'https://utonga-cons.up.railway.app')
 TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID', '')
 TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN', '')
 TWILIO_FROM_NUMBER = os.environ.get('TWILIO_FROM_NUMBER', '')

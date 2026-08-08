@@ -35,18 +35,21 @@ const GalleryGrid = () => {
     const fetchImages = async () => {
       try {
         const res = await api.get('/api/gallery/');
+        // Pre-defined High-Fidelity Sanctuary Images
+        const defaultImages = [
+          { title: "Forest Trail", category: "Restoration", img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2071" },
+          { title: "Wetland Sanctuary", category: "Biodiversity", img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070" },
+          { title: "Hippo Point", category: "Wildlife", img: "https://images.unsplash.com/photo-1544198365-f5d60b6d8190?q=80&w=2070" },
+          { title: "Botanical Garden", category: "Preservation", img: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=1932" },
+          { title: "Camp Site", category: "Visitor Experience", img: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=2070" },
+          { title: "Lakeside Sunset", category: "Environment", img: "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?q=80&w=2070" }
+        ];
+
         if (Array.isArray(res.data) && res.data.length > 0) {
-          setImages(res.data);
+          // Merge dynamic uploads with high-fidelity defaults
+          setImages([...res.data, ...defaultImages]);
         } else {
-          // Fallback to defaults if backend is empty
-          setImages([
-            { title: "Forest Trail", category: "Restoration", img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2071" },
-            { title: "Wetland Sanctuary", category: "Biodiversity", img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070" },
-            { title: "Hippo Point", category: "Wildlife", img: "https://images.unsplash.com/photo-1544198365-f5d60b6d8190?q=80&w=2070" },
-            { title: "Botanical Garden", category: "Preservation", img: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=1932" },
-            { title: "Camp Site", category: "Visitor Experience", img: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=2070" },
-            { title: "Lakeside Sunset", category: "Environment", img: "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?q=80&w=2070" }
-          ]);
+          setImages(defaultImages);
         }
       } catch (err) {
         console.error('Gallery sync error:', err);

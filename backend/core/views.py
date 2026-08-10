@@ -274,8 +274,10 @@ def initiate_donation(request):
             "Content-Type": "application/json"
         }
         
-        # Using a dedicated callback HTML to escape Paystack Iframe security sandbox
-        callback_url = f"{domain}/paystack_callback.html?status=success&id={donation.id}"
+        # We NO LONGER use a callback_url. 
+        # By removing it, Paystack will show its own "Success" screen and then 
+        # automatically CLOSE the checkout modal, returning the user to our page.
+        # This is the standard "Iframe Escape" strategy for Paystack.
 
         data = {
             "email": email,
@@ -283,7 +285,6 @@ def initiate_donation(request):
             "currency": target_currency,
             "channels": channels,
             "reference": f"UTG_{donation.id}_{int(timezone.now().timestamp())}{'_FB' if is_fallback else ''}",
-            "callback_url": callback_url,
             "metadata": {
                 "donation_id": donation.id,
                 "original_amount_usd": amount,

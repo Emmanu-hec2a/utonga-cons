@@ -28,6 +28,8 @@ class WeatherService:
             temp = round(data['main']['temp'])
             condition = data['weather'][0]['main']
             icon = data['weather'][0]['icon']
+            humidity = data['main'].get('humidity', 0)
+            wind_speed = round(data['wind'].get('speed', 0) * 3.6) # Convert m/s to km/h
             
             # Dynamic advisory logic
             advisory = "Perfect for sanctuary exploration."
@@ -39,6 +41,8 @@ class WeatherService:
                 "temp": temp,
                 "condition": condition,
                 "icon": icon,
+                "humidity": humidity,
+                "wind_speed": wind_speed,
                 "advisory": advisory
             }
         except Exception:

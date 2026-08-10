@@ -35,9 +35,17 @@ const DonationFlow = () => {
     try {
       const res = await api.get(`/api/donations/${id}/status/`);
       if (res.data.status === 'completed') {
-        setDonationResult(res.data);
-        setAmount(String(res.data.amount));
-        setStep(4); // Advance to success
+        // Data Sanitization: Convert everything to safe primitives
+        const safeData = {
+          id: String(res.data.id),
+          amount: String(res.data.amount),
+          donor_name: String(res.data.donor_name || ''),
+          donor_email: String(res.data.donor_email || ''),
+          status: 'completed'
+        };
+        setDonationResult(safeData);
+        setAmount(safeData.amount);
+        setStep(4);
       }
       return res.data.status;
     } catch (err) {
@@ -246,11 +254,20 @@ const DonationFlow = () => {
           </div>
         );
       case 4:
+        // Deep String Sanitization for React Stability
         const treeCount = String(amount || '0');
         const stewardId = donationResult?.id ? String(donationResult.id) : '';
-        const isWaiting = donationResult?.is_waiting;
+        const isWaiting = !!donationResult?.is_waiting;
 
-        if (isWaiting) {
+        if (isWaiting && !donationResult?.id) {
+          // Absolute fallback if ID is missing during polling setup
+          return (
+            <div className="text-center py-24">
+              <Loader2 className="animate-spin mx-auto text-utonga-accent" size={48} />
+              <p className="mt-4 text-white">Initializing secure session...</p>
+            </div>
+          );
+        }
           return (
             <div className="text-center py-24 space-y-8 animate-in fade-in zoom-in duration-700">
               <div className="flex justify-center mb-8">

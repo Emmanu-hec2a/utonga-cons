@@ -22,10 +22,10 @@ const DonationFlow = () => {
     const status = searchParams.get('status');
     const id = searchParams.get('id');
     if (status === 'success' && id) {
+      // Direct jump to success step without history manipulation
+      // to avoid Paystack Cross-Origin Security Errors
       setStep(4);
-      fetchLiveDonationStatus(id);
-
-      // Removed History API manipulation as it crashes in Paystack cross-origin contexts
+      fetchLiveDonationStatus(String(id));
     }
   }, [searchParams]);
 
@@ -58,16 +58,17 @@ const DonationFlow = () => {
   // Auto-Polling Logic for "New Tab" checkout
   useEffect(() => {
     let interval;
-    if (step === 4 && donationResult?.is_waiting) {
+    if (step === 4 && donationResult?.is_waiting && donationResult?.id) {
+      const pollingId = String(donationResult.id);
       interval = setInterval(async () => {
-        const currentStatus = await fetchLiveDonationStatus(donationResult.id);
+        const currentStatus = await fetchLiveDonationStatus(pollingId);
         if (currentStatus === 'completed') {
           clearInterval(interval);
         }
-      }, 3000); // Check every 3 seconds
+      }, 3000);
     }
     return () => clearInterval(interval);
-  }, [step, donationResult]);
+  }, [step, donationResult?.is_waiting, donationResult?.id]);
 
   const presets = [10, 25, 50, 100];
 
@@ -89,13 +90,23 @@ const DonationFlow = () => {
       if (res.data.checkout_url) {
         // High-Fidelity Hybrid Flow:
         // Set the MAIN tab to "Waiting" BEFORE opening the new tab
-        setDonationResult({ id: res.data.donation_id, is_waiting: true });
+        const initData = {
+          id: String(res.data.donation_id),
+          is_waiting: true
+        };
+        setDonationResult(initData);
         setStep(4);
 
         // Open the Paystack checkout in a new window/tab
         window.open(res.data.checkout_url, '_blank');
       } else {
-        setDonationResult(res.data);
+        const directData = {
+          id: String(res.data.id || res.data.donation_id),
+          amount: String(res.data.amount),
+          donor_name: String(res.data.donor_name || ''),
+          status: String(res.data.status || 'completed')
+        };
+        setDonationResult(directData);
         handleNext();
       }
     } catch (err) {
@@ -255,11 +266,12 @@ const DonationFlow = () => {
         );
       case 4:
         // Deep String Sanitization for React Stability
-        const treeCount = String(amount || '0');
+        const currentAmount = String(amount || '0');
+        const treeCount = String(currentAmount);
         const stewardId = donationResult?.id ? String(donationResult.id) : '';
-        const isWaiting = !!donationResult?.is_waiting;
+        const isWaiting = Boolean(donationResult?.is_waiting);
 
-        if (isWaiting && !donationResult?.id) {
+        if (isWaiting && !stewardId) {
           // Absolute fallback if ID is missing during polling setup
           return (
             <div className="text-center py-24">
@@ -317,8 +329,8 @@ const DonationFlow = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
               <button
-                onClick={handleDownloadCertificate}
-                disabled={!stewardId}
+                onClick={() => handleDownloadCertificate()}
+                disabled={!stewardId || isWaiting}
                 className="flex items-center gap-3 bg-white text-black px-8 py-4 rounded-2xl font-black hover:bg-gray-100 transition-all group w-full sm:w-auto disabled:opacity-50"
               >
                 <Download size={20} className="group-hover:translate-y-0.5 transition-transform" />

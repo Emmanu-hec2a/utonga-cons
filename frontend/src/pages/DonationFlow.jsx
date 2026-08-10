@@ -268,6 +268,8 @@ const DonationFlow = () => {
             </div>
           );
         }
+
+        if (isWaiting) {
           return (
             <div className="text-center py-24 space-y-8 animate-in fade-in zoom-in duration-700">
               <div className="flex justify-center mb-8">

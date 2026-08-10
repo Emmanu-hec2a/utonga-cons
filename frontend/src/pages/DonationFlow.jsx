@@ -24,8 +24,13 @@ const DonationFlow = () => {
     if (status === 'success' && id) {
       setStep(4);
       fetchLiveDonationStatus(id);
-      // Clean up the URL to maintain high-fidelity look
-      window.history.replaceState({}, document.title, window.location.pathname + '?status=success&id=' + id);
+
+      // Use a try-catch to handle cross-origin history issues in iframes
+      try {
+        window.history.replaceState({}, document.title, window.location.pathname + '?status=success&id=' + id);
+      } catch (e) {
+        console.warn('History API restricted in cross-origin context');
+      }
     }
   }, [searchParams]);
 
@@ -244,11 +249,11 @@ const DonationFlow = () => {
               <h2 className="text-4xl md:text-5xl font-black text-white leading-tight">
                 Welcome, <span className="text-utonga-accent italic">Sanctuary Steward.</span>
               </h2>
-              <p className="text-gray-400 max-w-md mx-auto text-lg">
+              <div className="text-gray-400 max-w-md mx-auto text-lg">
                 Your contribution has taken root. You just planted
-                <span className="text-white font-bold px-2">{amount} indigenous trees</span>
+                <span className="text-white font-bold px-2">{String(amount)} indigenous {Number(amount) === 1 ? 'tree' : 'trees'}</span>
                 in the heart of Utonga.
-              </p>
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">

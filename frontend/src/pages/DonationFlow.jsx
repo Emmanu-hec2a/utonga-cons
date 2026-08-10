@@ -30,23 +30,36 @@ const DonationFlow = () => {
   }, [searchParams]);
 
   const fetchLiveDonationStatus = async (id) => {
+    if (!id) return;
     setIsLoadingStatus(true);
     try {
       const res = await api.get(`/api/donations/${id}/status/`);
-      setDonationResult(res.data);
-      setAmount(String(res.data.amount));
-      setMethod(res.data.method);
-      setDetails({
-        name: res.data.donor_name,
-        email: res.data.donor_email,
-        phone: ''
-      });
+      if (res.data.status === 'completed') {
+        setDonationResult(res.data);
+        setAmount(String(res.data.amount));
+        setStep(4); // Advance to success
+      }
+      return res.data.status;
     } catch (err) {
       console.error('Error fetching live status:', err);
     } finally {
       setIsLoadingStatus(false);
     }
   };
+
+  // Auto-Polling Logic for "New Tab" checkout
+  useEffect(() => {
+    let interval;
+    if (step === 4 && donationResult?.is_waiting) {
+      interval = setInterval(async () => {
+        const currentStatus = await fetchLiveDonationStatus(donationResult.id);
+        if (currentStatus === 'completed') {
+          clearInterval(interval);
+        }
+      }, 3000); // Check every 3 seconds
+    }
+    return () => clearInterval(interval);
+  }, [step, donationResult]);
 
   const presets = [10, 25, 50, 100];
 

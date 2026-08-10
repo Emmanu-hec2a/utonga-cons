@@ -18,10 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from core import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('core.urls')),
+    path('api/weather/', views.get_sanctuary_weather, name='weather'),
+    path('api/donations/<int:donation_id>/certificate/', views.download_certificate, name='download_certificate'),
 ]
 
 if settings.DEBUG:

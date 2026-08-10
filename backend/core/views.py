@@ -11,7 +11,9 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
+from .certification_service import CertificationService
+from .weather_service import WeatherService
 from .email_utils import send_resend_email
 from .models import (
     Campaign, Donation, RoadmapMilestone, GalleryImage,
@@ -152,6 +154,26 @@ def paystack_webhook(request):
 
 from .ai_service import UtongaAIService
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def download_certificate(request, donation_id):
+    """
+    Generates and returns the Sanctuary Steward PDF certificate.
+    """
+    donation = get_object_or_404(Donation, id=donation_id)
+    if donation.status != 'completed':
+        return Response({'error': 'Donation not completed'}, status=400)
+        
+    buffer = CertificationService.generate_steward_certificate(donation)
+    filename = f"Sanctuary_Steward_{donation_id}.pdf"
+    
+    return FileResponse(
+        buffer,
+        as_attachment=True,
+        filename=filename,
+        content_type='application/pdf'
+    )
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def ai_chat(request):
@@ -208,6 +230,15 @@ def verify_donation_manually(request, donation_id):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 from .currency_service import CurrencyService
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_sanctuary_weather(request):
+    """
+    Returns current weather data for Utonga Sanctuary.
+    """
+    weather = WeatherService.get_current_sanctuary_weather()
+    return Response(weather)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])

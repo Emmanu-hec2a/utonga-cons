@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { CreditCard, Smartphone, Building, QrCode, CheckCircle, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
+import { CreditCard, Smartphone, Building, QrCode, CheckCircle, ArrowLeft, ArrowRight, Loader2, Download, Share2, Heart, Trees } from 'lucide-react';
 import { useSearchParams, Link } from 'react-router-dom';
+import Lottie from 'lottie-react';
+import treeAnimation from '../assets/animations/tree-sprout.json';
 import PhoneInputPkg from 'react-phone-input-2';
 const PhoneInput = PhoneInputPkg.default || PhoneInputPkg;
 import 'react-phone-input-2/lib/style.css';
@@ -73,6 +75,24 @@ const DonationFlow = () => {
       alert('Error initiating donation. Please try again.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleDownloadCertificate = async () => {
+    try {
+      const response = await api.get(`/api/donations/${donationResult.id}/certificate/`, {
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Sanctuary_Steward_${donationResult.id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error('Certification failed:', err);
+      alert('Could not generate certificate. Please try again later.');
     }
   };
 
@@ -208,40 +228,57 @@ const DonationFlow = () => {
         );
       case 4:
         return (
-          <div className="text-center space-y-10 py-12 animate-in zoom-in duration-500">
-            <div className="flex justify-center">
-              <div className="w-28 h-28 bg-utonga-green/10 rounded-full flex items-center justify-center relative border border-utonga-green/20">
-                <CheckCircle size={56} className="text-utonga-green" />
-                {isLoadingStatus && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                     <Loader2 size={72} className="text-utonga-green animate-spin opacity-50" />
-                  </div>
-                )}
-              </div>
-            </div>
-            <div>
-              <h2 className="text-5xl font-black tracking-tight mb-4">Thank you{donationResult?.donor_name ? `, ${donationResult.donor_name.split(' ')[0]}` : ''}!</h2>
-              <p className="text-xl text-gray-400 font-medium">You just planted <span className="text-white font-black">{donationResult?.amount || amount} trees</span> in Utonga.</p>
-            </div>
-
-            <div className="bg-white/[0.02] p-10 rounded-[2.5rem] border border-white/[0.05] text-left space-y-6 backdrop-blur-3xl shadow-2xl">
-              <div className="flex justify-between items-center border-b border-white/[0.05] pb-6">
-                <span className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Amount</span>
-                <span className="text-2xl font-black text-utonga-accent">${donationResult?.amount || amount}</span>
-              </div>
-              <div className="flex justify-between items-center border-b border-white/[0.05] pb-6">
-                <span className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Method</span>
-                <span className="font-black uppercase tracking-wider bg-white/[0.05] px-3 py-1 rounded-lg text-xs">{donationResult?.method || method}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Transaction ID</span>
-                <span className="font-mono text-sm text-gray-400">UTG-{donationResult?.id || searchParams.get('id')}</span>
+          <div className="text-center py-12 space-y-8 animate-in fade-in zoom-in duration-700">
+            <div className="flex justify-center mb-4">
+              <div className="w-64 h-64 relative">
+                <Lottie
+                  animationData={treeAnimation}
+                  loop={false}
+                  className="w-full h-full"
+                />
+                <div className="absolute inset-0 bg-utonga-accent/10 blur-3xl -z-10 rounded-full"></div>
               </div>
             </div>
 
-            <div className="flex flex-col gap-5 pt-4">
-              <button className="w-full bg-[#1DA1F2] hover:bg-opacity-90 py-5 rounded-[2rem] font-black text-lg transition-all shadow-xl shadow-[#1DA1F2]/20">Share on Social Media</button>
-              <Link to="/" className="w-full py-5 rounded-[2rem] font-black text-lg border-2 border-white/[0.05] hover:bg-white/5 transition-all">Return to Sanctuary</Link>
+            <div className="space-y-4">
+              <h2 className="text-4xl md:text-5xl font-black text-white leading-tight">
+                Welcome, <span className="text-utonga-accent italic">Sanctuary Steward.</span>
+              </h2>
+              <p className="text-gray-400 max-w-md mx-auto text-lg">
+                Your contribution has taken root. You just planted
+                <span className="text-white font-bold px-2">{amount} indigenous trees</span>
+                in the heart of Utonga.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
+              <button
+                onClick={handleDownloadCertificate}
+                className="flex items-center gap-3 bg-white text-black px-8 py-4 rounded-2xl font-black hover:bg-gray-100 transition-all group w-full sm:w-auto"
+              >
+                <Download size={20} className="group-hover:translate-y-0.5 transition-transform" />
+                Download Certificate
+              </button>
+              <button
+                onClick={() => {
+                  const text = `I just became a Sanctuary Steward at Utonga Conservation by planting ${amount} trees! 🐆🌍 Join the mission:`;
+                  const url = window.location.origin;
+                  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+                }}
+                className="flex items-center gap-3 bg-gray-900 text-white px-8 py-4 rounded-2xl font-black border border-gray-800 hover:border-gray-700 transition-all w-full sm:w-auto"
+              >
+                <Share2 size={20} />
+                Share Impact
+              </button>
+            </div>
+
+            <div className="pt-12">
+              <Link
+                to="/explore"
+                className="text-utonga-accent font-bold hover:underline flex items-center justify-center gap-2"
+              >
+                See your impact in the Gallery <ArrowRight size={16} />
+              </Link>
             </div>
           </div>
         );

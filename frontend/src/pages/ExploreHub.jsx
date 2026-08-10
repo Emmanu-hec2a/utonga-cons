@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Trees, Binoculars, Users, MapPin } from 'lucide-react';
 import GalleryGrid from '../components/GalleryGrid';
+import WeatherPulse from '../components/WeatherPulse';
 
 const ExploreCard = ({ title, description, icon: Icon, link, category }) => (
   <Link to={link} className="group relative bg-white/[0.02] border border-white/[0.05] p-8 rounded-[2.5rem] hover:border-utonga-accent transition-all duration-500 overflow-hidden flex flex-col h-full">
@@ -32,6 +33,9 @@ const ExploreHub = () => {
               Journey through the restored Sitatunga Botanical Garden and explore the
               intricate tapestry of East African biodiversity.
             </p>
+          </div>
+          <div className="mt-12 md:mt-0 w-full md:w-80">
+            <WeatherPulse />
           </div>
         </div>
       </section>

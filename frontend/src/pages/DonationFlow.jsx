@@ -25,12 +25,7 @@ const DonationFlow = () => {
       setStep(4);
       fetchLiveDonationStatus(id);
 
-      // Use a try-catch to handle cross-origin history issues in iframes
-      try {
-        window.history.replaceState({}, document.title, window.location.pathname + '?status=success&id=' + id);
-      } catch (e) {
-        console.warn('History API restricted in cross-origin context');
-      }
+      // Removed History API manipulation as it crashes in Paystack cross-origin contexts
     }
   }, [searchParams]);
 
@@ -232,15 +227,20 @@ const DonationFlow = () => {
           </div>
         );
       case 4:
+        const treeCount = String(amount || '0');
+        const stewardId = donationResult?.id ? String(donationResult.id) : '';
+
         return (
           <div className="text-center py-12 space-y-8 animate-in fade-in zoom-in duration-700">
             <div className="flex justify-center mb-4">
               <div className="w-64 h-64 relative">
-                <Lottie
-                  animationData={treeAnimation}
-                  loop={false}
-                  className="w-full h-full"
-                />
+                {treeAnimation && (
+                  <Lottie
+                    animationData={treeAnimation}
+                    loop={false}
+                    className="w-full h-full"
+                  />
+                )}
                 <div className="absolute inset-0 bg-utonga-accent/10 blur-3xl -z-10 rounded-full"></div>
               </div>
             </div>
@@ -251,7 +251,7 @@ const DonationFlow = () => {
               </h2>
               <div className="text-gray-400 max-w-md mx-auto text-lg">
                 Your contribution has taken root. You just planted
-                <span className="text-white font-bold px-2">{String(amount)} indigenous {Number(amount) === 1 ? 'tree' : 'trees'}</span>
+                <span className="text-white font-bold px-2">{treeCount} indigenous {Number(treeCount) === 1 ? 'tree' : 'trees'}</span>
                 in the heart of Utonga.
               </div>
             </div>
@@ -259,14 +259,15 @@ const DonationFlow = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
               <button
                 onClick={handleDownloadCertificate}
-                className="flex items-center gap-3 bg-white text-black px-8 py-4 rounded-2xl font-black hover:bg-gray-100 transition-all group w-full sm:w-auto"
+                disabled={!stewardId}
+                className="flex items-center gap-3 bg-white text-black px-8 py-4 rounded-2xl font-black hover:bg-gray-100 transition-all group w-full sm:w-auto disabled:opacity-50"
               >
                 <Download size={20} className="group-hover:translate-y-0.5 transition-transform" />
                 Download Certificate
               </button>
               <button
                 onClick={() => {
-                  const text = `I just became a Sanctuary Steward at Utonga Conservation by planting ${amount} trees! 🐆🌍 Join the mission:`;
+                  const text = `I just became a Sanctuary Steward at Utonga Conservation by planting ${treeCount} trees! 🐆🌍 Join the mission:`;
                   const url = window.location.origin;
                   window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
                 }}

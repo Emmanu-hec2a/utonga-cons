@@ -3,54 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting to Utonga...</title>
+    <title>Utonga Sanctuary - Verification</title>
     <style>
         body {
             background: #000;
             color: #FFD700;
-            font-family: sans-serif;
+            font-family: 'Space Mono', monospace, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            animation: fadeIn 1s ease-out;
+        }
+        .icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        h1 {
+            font-size: 14px;
+            letter-spacing: 0.3em;
+            margin-bottom: 30px;
+            font-weight: 900;
+        }
+        .btn {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 18px 40px;
+            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 0.2em;
-            font-size: 12px;
-            font-weight: bold;
+            letter-spacing: 0.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
         }
-        .loader {
-            border: 2px solid rgba(255, 215, 0, 0.1);
-            border-top: 2px solid #FFD700;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            margin-right: 15px;
+        .btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.4);
+            background: #fff;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .hint {
+            margin-top: 25px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
 <body>
-    <div class="loader"></div>
-    Redirecting to Sanctuary Hub...
+    <div class="container">
+        <div class="icon">🐆</div>
+        <h1>Payment Verified</h1>
+        <a id="escape-link" href="#" class="btn">Enter Sanctuary Hub</a>
+        <p class="hint">Click to claim your Steward Certificate</p>
+    </div>
 
     <script>
-        // Use window.top.location.href to ESCAPE the Paystack iframe
-        // and force a full browser redirect to the Thank You page.
         const params = new URLSearchParams(window.location.search);
         const donationId = params.get('id');
         const status = params.get('status') || 'success';
 
-        if (donationId) {
-            window.top.location.href = window.location.origin + '/give?status=' + status + '&id=' + donationId;
-        } else {
-            // Fallback if ID is missing
-            window.top.location.href = window.location.origin + '/give?status=success';
-        }
+        // Construct the final destination URL
+        const destination = window.location.origin + '/give?status=' + status + '&id=' + donationId;
+
+        const btn = document.getElementById('escape-link');
+        btn.href = destination;
+
+        // User-Activation Strategy:
+        // We attempt top navigation on click to satisfy the browser's
+        // "allow-top-navigation-by-user-activation" sandbox requirement.
+        btn.onclick = function(e) {
+            e.preventDefault();
+            window.top.location.href = destination;
+        };
+
+        // If by some chance the sandbox ISN'T restricted, we still try auto-redirect
+        setTimeout(() => {
+            try {
+                window.top.location.href = destination;
+            } catch (e) {
+                console.log("Automatic redirect blocked by Paystack sandbox. Waiting for user interaction.");
+            }
+        }, 2000);
     </script>
 </body>
 </html>

@@ -174,6 +174,9 @@ def download_certificate(request, donation_id):
         content_type='application/pdf'
     )
 
+from ratelimit.decorators import ratelimit
+
+@ratelimit(key='ip', rate='5/m', method='POST', block=True)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def ai_chat(request):
@@ -240,6 +243,7 @@ def get_sanctuary_weather(request):
     weather = WeatherService.get_current_sanctuary_weather()
     return Response(weather)
 
+@ratelimit(key='ip', rate='5/m', method='POST', block=True)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def initiate_donation(request):

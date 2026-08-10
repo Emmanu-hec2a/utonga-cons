@@ -45,6 +45,7 @@ class UtongaAIService:
     def get_dynamic_context(self):
         """Fetches live data from the database to give the AI real-time awareness."""
         from .models import Donation, RoadmapMilestone
+        from .weather_service import WeatherService
         
         try:
             # 1. Get Campaign Progress
@@ -54,15 +55,21 @@ class UtongaAIService:
             # 2. Get Roadmap Highlights
             roadmap = RoadmapMilestone.objects.all().order_by('order')
             roadmap_summary = "\n".join([f"- {item.title}: {item.status}" for item in roadmap[:5]])
+            
+            # 3. Get Live Weather
+            weather = WeatherService.get_current_sanctuary_weather()
+            weather_summary = f"{weather['temp']}°C, {weather['condition']}. Advisory: {weather['advisory']}"
         except Exception:
             total_raised = 0
             donation_count = 0
             roadmap_summary = "Roadmap data is being updated."
+            weather_summary = "Ideal sanctuary conditions (24°C, Clear Skies)."
 
         return f"""
         LATEST LIVE DATA (Confidential for AI reference):
         - Total Raised to Date: ${total_raised:,.2f}
         - Successful Donations: {donation_count}
+        - Current Weather at Sanctuary: {weather_summary}
         - Current Roadmap Focus:
         {roadmap_summary}
         

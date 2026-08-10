@@ -12,7 +12,7 @@ class WeatherService:
     def get_current_sanctuary_weather():
         try:
             # Open-Meteo URL with current_weather and extra metrics
-            url = f"https://api.open-meteo.com/v1/forecast?latitude=-0.0917&longitude=34.7680&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&wind_speed_unit=kmh&timezone=Africa%2FNairobi"
+            url = f"https://api.open-meteo.com/v1/forecast?latitude=-0.2386&longitude=34.2694&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&wind_speed_unit=kmh&timezone=Africa%2FNairobi"
             
             response = requests.get(url, timeout=5)
             data = response.json()

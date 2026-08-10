@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import api from '../api';
 import { Sun, Cloud, CloudRain, Wind, Droplets, X, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,6 +7,21 @@ const WeatherPulse = ({ variant = 'default' }) => {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
+  const cardRef = useRef(null);
+
+  // Click Outside logic to close the expanded card
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (cardRef.current && !cardRef.current.contains(event.target)) {
+        setIsExpanded(false);
+      }
+    };
+
+    if (isExpanded) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isExpanded]);
 
   useEffect(() => {
     const fetchWeather = async () => {
@@ -43,7 +58,7 @@ const WeatherPulse = ({ variant = 'default' }) => {
 
   if (variant === 'pill') {
     return (
-      <div className="relative">
+      <div className="relative" ref={cardRef}>
         {/* The Interactive Pill - Ultra Minimalist Variant */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}

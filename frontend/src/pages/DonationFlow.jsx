@@ -9,11 +9,19 @@ import api from '../api';
 
 // Lazy-loaded so lottie-web (and its eval-based expression engine) only ships
 // to visitors who actually reach the donation success screen, not the
-// initial bundle every visitor downloads. The `mod.default || mod` unwrap
-// guards the same default-export interop issue that hit the eager import.
+// initial bundle every visitor downloads.
+//
+// React.lazy() requires its resolved default to be a plain function or
+// class — it rejects React's other special component types outright,
+// including anything wrapped in React.memo()/forwardRef(), even though
+// those render fine in normal JSX. lottie-react's component is memo-wrapped
+// internally, so we resolve to a plain function that simply renders the
+// real component as a child, rather than handing the memo object to
+// lazy() directly.
 const Lottie = lazy(async () => {
   const mod = await import('lottie-react');
-  return { default: mod.default || mod };
+  const LottieComponent = mod.default || mod;
+  return { default: (props) => <LottieComponent {...props} /> };
 });
 
 const DonationFlow = () => {

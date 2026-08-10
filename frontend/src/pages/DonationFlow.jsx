@@ -67,6 +67,7 @@ const DonationFlow = () => {
   const handleBack = () => setStep(s => s - 1);
 
   const initiateDonation = async () => {
+    if (isSubmitting) return;
     setIsSubmitting(true);
     try {
       const res = await api.post('/api/donations/initiate/', {
@@ -78,19 +79,13 @@ const DonationFlow = () => {
       });
 
       if (res.data.checkout_url) {
-        // High-Fidelity Paystack Integration:
-        // We open the checkout in a new tab to COMPLETELY bypass
-        // iframe sandbox restrictions. This ensures the user returns
-        // to a clean, top-level window after payment.
-        const win = window.open(res.data.checkout_url, '_blank');
-        if (win) {
-          // If popup is successful, we show a "Payment in progress" step
-          setStep(4);
-          setDonationResult({ id: res.data.donation_id, is_waiting: true });
-        } else {
-          // Fallback if popup is blocked: direct redirect
-          window.location.href = res.data.checkout_url;
-        }
+        // High-Fidelity Hybrid Flow:
+        // Set the MAIN tab to "Waiting" BEFORE opening the new tab
+        setDonationResult({ id: res.data.donation_id, is_waiting: true });
+        setStep(4);
+
+        // Open the Paystack checkout in a new window/tab
+        window.open(res.data.checkout_url, '_blank');
       } else {
         setDonationResult(res.data);
         handleNext();
@@ -98,7 +93,6 @@ const DonationFlow = () => {
     } catch (err) {
       console.error(err);
       alert('Error initiating donation. Please try again.');
-    } finally {
       setIsSubmitting(false);
     }
   };

@@ -174,7 +174,7 @@ def download_certificate(request, donation_id):
         content_type='application/pdf'
     )
 
-from ratelimit.decorators import ratelimit
+from django_ratelimit.decorators import ratelimit
 
 @ratelimit(key='ip', rate='5/m', method='POST', block=True)
 @api_view(['POST'])

@@ -192,7 +192,7 @@ const UtongaAssistant = ({ isOpen, setIsOpen }) => {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="absolute bottom-[70px] right-0 sm:w-[380px] h-[520px] max-h-[70vh] sm:max-h-none bg-utonga-dark/95 backdrop-blur-xl border border-white/[0.08] rounded-3xl shadow-2xl overflow-hidden flex flex-col pointer-events-auto"
+            className="absolute bottom-[70px] right-0 w-[calc(100vw-48px)] sm:w-[380px] h-[520px] max-h-[60vh] sm:max-h-none bg-utonga-dark/95 backdrop-blur-xl border border-white/[0.08] rounded-3xl shadow-2xl overflow-hidden flex flex-col pointer-events-auto"
           >
            {/* Header */}
             <div className="p-4 border-b border-white/[0.08] bg-white/[0.02] flex items-center justify-between">

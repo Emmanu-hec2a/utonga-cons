@@ -51,21 +51,58 @@ const WeatherPulse = ({ variant = 'default' }) => {
   if (loading || !weather) return null;
 
   const WeatherIcon = ({ size = 16, className = "" }) => {
-    if (weather.condition.includes('Rain')) return <CloudRain size={size} className={`text-blue-400 ${className}`} />;
-    if (weather.condition.includes('Cloud')) return <Cloud size={size} className={`text-gray-400 ${className}`} />;
-    return <Sun size={size} className={`text-yellow-400 ${className}`} />;
+    const iconBase = "relative flex items-center justify-center w-8 h-8";
+    const utongaYellow = "#FFD700";
+
+    const RotatingBorder = () => (
+      <div className="absolute inset-0 rounded-full overflow-hidden p-[1.5px]">
+        {/* The Spinning Utonga Line */}
+        <div
+          className="absolute inset-[-100%] animate-[spin_3s_linear_infinite]"
+          style={{
+            background: `conic-gradient(from 0deg, transparent 0deg, transparent 280deg, ${utongaYellow} 360deg)`
+          }}
+        />
+        {/* Inner Mask for High-Fidelity Finish */}
+        <div className="absolute inset-[1.5px] bg-[#0A0A0A] rounded-full z-0" />
+      </div>
+    );
+
+    if (weather.condition.includes('Rain')) return (
+      <div className={iconBase}>
+        <RotatingBorder />
+        <CloudRain size={size} className={`text-blue-400 z-10 ${className}`} />
+      </div>
+    );
+
+    if (weather.condition.includes('Cloud')) return (
+      <div className={iconBase}>
+        <RotatingBorder />
+        <Cloud size={size} className={`text-gray-200 z-10 ${className}`} />
+      </div>
+    );
+
+    return (
+      <div className={iconBase}>
+        <RotatingBorder />
+        <Sun size={size} className={`text-yellow-400 z-10 animate-[spin_12s_linear_infinite] ${className}`} />
+      </div>
+    );
   };
 
   if (variant === 'pill') {
     return (
       <div className="relative" ref={cardRef}>
-        {/* The Interactive Pill - Ultra Minimalist Variant */}
+        {/* The Interactive Pill - Ultra Minimalist Variant with Premium Glow */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center gap-3 bg-black/60 backdrop-blur-xl border border-white/10 px-4 py-2.5 rounded-full shadow-2xl hover:bg-white/5 hover:border-utonga-accent/50 transition-all group animate-in fade-in slide-in-from-right-4 duration-700 cursor-pointer pointer-events-auto"
+          className="flex items-center gap-3 bg-black/60 backdrop-blur-xl border border-white/10 px-4 py-2.5 rounded-full shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_30px_rgba(255,215,0,0.3)] hover:bg-white/5 hover:border-utonga-accent/50 transition-all group animate-in fade-in slide-in-from-right-4 duration-700 cursor-pointer pointer-events-auto relative overflow-hidden"
         >
+          {/* Subtle Internal Pulse Glow */}
+          <div className="absolute inset-0 bg-utonga-accent/5 animate-pulse pointer-events-none" />
+
           <WeatherIcon size={18} />
-          <span className="text-white font-black text-sm tracking-tight">{weather.temp}°C</span>
+          <span className="text-white font-black text-sm tracking-tight z-10">{weather.temp}°C</span>
         </button>
 
         {/* Cinematic Expansion Card */}

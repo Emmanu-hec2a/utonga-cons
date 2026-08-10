@@ -274,13 +274,16 @@ def initiate_donation(request):
             "Content-Type": "application/json"
         }
         
+        # Using a dedicated callback HTML to escape Paystack Iframe security sandbox
+        callback_url = f"{domain}/paystack_callback.html?status=success&id={donation.id}"
+
         data = {
             "email": email,
             "amount": target_amount,
             "currency": target_currency,
             "channels": channels,
             "reference": f"UTG_{donation.id}_{int(timezone.now().timestamp())}{'_FB' if is_fallback else ''}",
-            "callback_url": f"{domain}/give?status=success&id={donation.id}",
+            "callback_url": callback_url,
             "metadata": {
                 "donation_id": donation.id,
                 "original_amount_usd": amount,

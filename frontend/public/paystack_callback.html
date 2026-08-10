@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting to Utonga...</title>
+    <style>
+        body {
+            background: #000;
+            color: #FFD700;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .loader {
+            border: 2px solid rgba(255, 215, 0, 0.1);
+            border-top: 2px solid #FFD700;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin-right: 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+    Redirecting to Sanctuary Hub...
+
+    <script>
+        // Use window.top.location.href to ESCAPE the Paystack iframe
+        // and force a full browser redirect to the Thank You page.
+        const params = new URLSearchParams(window.location.search);
+        const donationId = params.get('id');
+        const status = params.get('status') || 'success';
+
+        if (donationId) {
+            window.top.location.href = window.location.origin + '/give?status=' + status + '&id=' + donationId;
+        } else {
+            // Fallback if ID is missing
+            window.top.location.href = window.location.origin + '/give?status=success';
+        }
+    </script>
+</body>
+</html>

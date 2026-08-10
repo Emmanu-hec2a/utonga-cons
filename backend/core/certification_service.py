@@ -47,10 +47,15 @@ class CertificationService:
         c.setFont("Helvetica-Oblique", 18)
         c.drawCentredString(width / 2, height - 240, "This is to certify that")
         
-        # Donor Name (Large & Bold)
-        c.setFont("Helvetica-Bold", 48)
+        # Donor Name (Large & Bold with Dynamic Sizing to prevent breaking)
+        donor_name = str(donation.donor_name).upper()
+        name_font_size = 48
+        if len(donor_name) > 20: name_font_size = 36
+        if len(donor_name) > 30: name_font_size = 28
+        
+        c.setFont("Helvetica-Bold", name_font_size)
         c.setFillColor(colors.HexColor("#1A1A1A"))
-        c.drawCentredString(width / 2, height - 300, donation.donor_name.upper())
+        c.drawCentredString(width / 2, height - 300, donor_name)
         
         c.setFont("Helvetica", 18)
         c.setFillColor(colors.black)
@@ -58,12 +63,19 @@ class CertificationService:
         
         c.setFont("Helvetica-Bold", 24)
         c.setFillColor(colors.HexColor("#4A5D23"))
-        tree_count = int(donation.amount) # Assuming $1 = 1 tree
-        c.drawCentredString(width / 2, height - 400, f"{tree_count} INDIGENOUS TREES")
+        # Ensure tree_count is handled as a safe integer for rendering
+        try:
+            tree_count = int(float(donation.amount))
+        except (ValueError, TypeError):
+            tree_count = 0
+            
+        c.drawCentredString(width / 2, height - 400, f"{tree_count} INDIGENOUS { 'TREE' if tree_count == 1 else 'TREES' }")
 
         c.setFont("Helvetica", 14)
         c.setFillColor(colors.gray)
-        c.drawCentredString(width / 2, height - 440, f"Issued on this day, {timezone.now().strftime('%B %d, %Y')}")
+        # Handle timestamp safely if it exists
+        issue_date = donation.created_at.strftime('%B %d, %Y') if hasattr(donation, 'created_at') and donation.created_at else timezone.now().strftime('%B %d, %Y')
+        c.drawCentredString(width / 2, height - 440, f"Issued on this day, {issue_date}")
 
         # --- Signatures ---
         # Left Signature (Scripted Look)

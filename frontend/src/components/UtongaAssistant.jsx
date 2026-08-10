@@ -47,9 +47,8 @@ const Typewriter = ({ text, onComplete, onNavigate }) => {
   );
 };
 
-const UtongaAssistant = () => {
+const UtongaAssistant = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -155,9 +154,9 @@ const UtongaAssistant = () => {
             initial={{ opacity: 0, x: 20, scale: 0.8 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 10, scale: 0.8 }}
-            className="fixed bottom-24 right-6 z-[60] group"
+            className="absolute bottom-[70px] right-0 z-[60] group"
           >
-            <div className="relative bg-utonga-dark/90 backdrop-blur-xl border border-utonga-accent/30 p-4 pr-10 rounded-2xl shadow-2xl max-w-[240px]">
+            <div className="relative bg-utonga-dark/95 backdrop-blur-xl border border-utonga-accent/30 p-4 pr-10 rounded-2xl shadow-2xl w-[260px]">
               <p className="text-xs text-white/90 leading-relaxed font-medium">
                 Want to know how your <span className="text-utonga-accent font-bold">contribution</span> impacts the mission? Ask me! 🌍
               </p>
@@ -168,7 +167,7 @@ const UtongaAssistant = () => {
                 <X size={14} />
               </button>
               {/* Tooltip Arrow */}
-              <div className="absolute -bottom-2 right-6 w-4 h-4 bg-utonga-dark border-r border-b border-utonga-accent/30 rotate-45" />
+              <div className="absolute -bottom-2 right-[22px] w-4 h-4 bg-utonga-dark border-r border-b border-utonga-accent/30 rotate-45" />
             </div>
           </motion.div>
         )}
@@ -177,12 +176,12 @@ const UtongaAssistant = () => {
       {/* Floating Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-[60] w-14 h-14 bg-utonga-accent rounded-full flex items-center justify-center shadow-2xl shadow-utonga-accent/20 hover:scale-110 transition-transform cursor-pointer group"
+        className="w-14 h-14 bg-utonga-accent rounded-full flex items-center justify-center shadow-2xl shadow-utonga-accent/20 hover:scale-110 transition-transform cursor-pointer group pointer-events-auto relative"
       >
-        {isOpen ? <X className="text-black" /> : <MessageCircle className="text-black" />}
+        {isOpen ? <X className="text-black" /> : <MessageCircle className="text-black" size={24} />}
         {!isOpen && (
-           <span className="absolute -top-1 -right-1 w-4 h-4 bg-white rounded-full flex items-center justify-center animate-bounce">
-             <Sparkles size={10} className="text-utonga-accent" />
+           <span className="absolute -top-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg transform scale-100 group-hover:scale-110 transition-transform duration-300">
+             <Sparkles size={12} className="text-utonga-accent animate-pulse" />
            </span>
         )}
       </button>
@@ -193,9 +192,9 @@ const UtongaAssistant = () => {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-24 right-4 left-4 sm:left-auto sm:right-6 z-[60] sm:w-[380px] h-[520px] max-h-[70vh] sm:max-h-none bg-utonga-dark/95 backdrop-blur-xl border border-white/[0.08] rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+            className="absolute bottom-[70px] right-0 sm:w-[380px] h-[520px] max-h-[70vh] sm:max-h-none bg-utonga-dark/95 backdrop-blur-xl border border-white/[0.08] rounded-3xl shadow-2xl overflow-hidden flex flex-col pointer-events-auto"
           >
-            {/* Header */}
+           {/* Header */}
             <div className="p-4 border-b border-white/[0.08] bg-white/[0.02] flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-utonga-accent/10 rounded-xl flex items-center justify-center border border-utonga-accent/20">

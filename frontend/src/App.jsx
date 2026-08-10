@@ -14,6 +14,8 @@ import Legal from './pages/Legal';
 import Footer from './components/Footer';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import UtongaAssistant from './components/UtongaAssistant';
+import WeatherPulse from './components/WeatherPulse';
+import { useState } from 'react';
 
 // Staff Pages
 import StaffLogin from './pages/Staff/Login';
@@ -38,15 +40,30 @@ const ScrollToTop = () => {
   return null;
 };
 
-const MainLayout = ({ children }) => (
-  <div className="min-h-screen bg-utonga-dark text-white">
-    <Navbar />
-    <main>{children}</main>
-    <Footer />
-    <ScrollToTopButton />
-    <UtongaAssistant />
-  </div>
-);
+const MainLayout = ({ children }) => {
+  const [isAiOpen, setIsAiOpen] = useState(false);
+
+  return (
+    <div className="min-h-screen bg-utonga-dark text-white">
+      <Navbar />
+      <main>{children}</main>
+      <Footer />
+
+      {/* Cinematic Sanctuary Hub (Stacked Bottom-Right) */}
+      <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-center gap-4 pointer-events-none">
+        <div className="pointer-events-auto">
+          <WeatherPulse variant="pill" />
+        </div>
+        <div className="relative pointer-events-auto">
+          <UtongaAssistant isOpen={isAiOpen} setIsOpen={setIsAiOpen} />
+        </div>
+        <div className="pointer-events-auto">
+          <ScrollToTopButton />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 function AppRoutes() {
   return (

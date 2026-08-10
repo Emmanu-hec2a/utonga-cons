@@ -1,12 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { CreditCard, Smartphone, Building, QrCode, CheckCircle, ArrowLeft, ArrowRight, Loader2, Download, Share2, Heart, Trees } from 'lucide-react';
 import { useSearchParams, Link } from 'react-router-dom';
-import Lottie from 'lottie-react';
 import treeAnimation from '../assets/animations/tree-sprout.json';
 import PhoneInputPkg from 'react-phone-input-2';
 const PhoneInput = PhoneInputPkg.default || PhoneInputPkg;
 import 'react-phone-input-2/lib/style.css';
 import api from '../api';
+
+// Lazy-loaded so lottie-web (and its eval-based expression engine) only ships
+// to visitors who actually reach the donation success screen, not the
+// initial bundle every visitor downloads. The `mod.default || mod` unwrap
+// guards the same default-export interop issue that hit the eager import.
+const Lottie = lazy(async () => {
+  const mod = await import('lottie-react');
+  return { default: mod.default || mod };
+});
 
 const DonationFlow = () => {
   const [searchParams] = useSearchParams();
@@ -306,11 +314,13 @@ const DonationFlow = () => {
             <div className="flex justify-center mb-4">
               <div className="w-64 h-64 relative">
                 {treeAnimation && (
-                  <Lottie
-                    animationData={treeAnimation}
-                    loop={false}
-                    className="w-full h-full"
-                  />
+                  <Suspense fallback={<div className="w-full h-full" />}>
+                    <Lottie
+                      animationData={treeAnimation}
+                      loop={false}
+                      className="w-full h-full"
+                    />
+                  </Suspense>
                 )}
                 <div className="absolute inset-0 bg-utonga-accent/10 blur-3xl -z-10 rounded-full"></div>
               </div>

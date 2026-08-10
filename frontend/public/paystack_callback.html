@@ -75,7 +75,7 @@
     <div class="container">
         <div class="icon">🐆</div>
         <h1>Payment Verified</h1>
-        <a id="escape-link" href="#" class="btn">Enter Sanctuary Hub</a>
+        <button id="escape-btn" class="btn">Enter Sanctuary Hub</button>
         <p class="hint">Click to claim your Steward Certificate</p>
     </div>
 
@@ -84,28 +84,34 @@
         const donationId = params.get('id');
         const status = params.get('status') || 'success';
 
-        // Construct the final destination URL
-        const destination = window.location.origin + '/give?status=' + status + '&id=' + donationId;
+        // Final destination for the PARENT window
+        const destination = '/give?status=' + status + '&id=' + donationId;
 
-        const btn = document.getElementById('escape-link');
-        btn.href = destination;
+        const btn = document.getElementById('escape-btn');
 
-        // User-Activation Strategy:
-        // We attempt top navigation on click to satisfy the browser's
-        // "allow-top-navigation-by-user-activation" sandbox requirement.
         btn.onclick = function(e) {
             e.preventDefault();
-            window.top.location.href = destination;
+            console.log("Attempting breakout...");
+
+            // THE NUCLEAR OPTION:
+            // Since Paystack is blocking window.top.location directly,
+            // we will try to "close" ourselves or trigger a top-level parent change.
+
+            // Try 1: Standard escape
+            try { window.top.location.href = destination; } catch(e) {}
+
+            // Try 2: Open in new tab (This usually works even in strict sandboxes)
+            // It will open the Success page in a fresh window, breaking the frame.
+            window.open(destination, '_top');
+
+            // Try 3: If still stuck, force a direct link click
+            window.location.href = destination;
         };
 
-        // If by some chance the sandbox ISN'T restricted, we still try auto-redirect
-        setTimeout(() => {
-            try {
-                window.top.location.href = destination;
-            } catch (e) {
-                console.log("Automatic redirect blocked by Paystack sandbox. Waiting for user interaction.");
-            }
-        }, 2000);
+        // Auto-attempt every second to catch "soft" sandboxes
+        setInterval(() => {
+            try { window.top.location.href = destination; } catch(e) {}
+        }, 1500);
     </script>
 </body>
 </html>

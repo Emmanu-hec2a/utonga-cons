@@ -61,11 +61,23 @@ const DonationFlow = () => {
         method,
         donor_name: details.name,
         donor_email: details.email,
-        phone_number: details.phone // This is the full +prefix number
+        phone_number: details.phone
       });
 
       if (res.data.checkout_url) {
-        window.location.href = res.data.checkout_url;
+        // High-Fidelity Paystack Integration:
+        // We open the checkout in a new tab to COMPLETELY bypass
+        // iframe sandbox restrictions. This ensures the user returns
+        // to a clean, top-level window after payment.
+        const win = window.open(res.data.checkout_url, '_blank');
+        if (win) {
+          // If popup is successful, we show a "Payment in progress" step
+          setStep(4);
+          setDonationResult({ id: res.data.donation_id, is_waiting: true });
+        } else {
+          // Fallback if popup is blocked: direct redirect
+          window.location.href = res.data.checkout_url;
+        }
       } else {
         setDonationResult(res.data);
         handleNext();
@@ -229,6 +241,27 @@ const DonationFlow = () => {
       case 4:
         const treeCount = String(amount || '0');
         const stewardId = donationResult?.id ? String(donationResult.id) : '';
+        const isWaiting = donationResult?.is_waiting;
+
+        if (isWaiting) {
+          return (
+            <div className="text-center py-24 space-y-8 animate-in fade-in zoom-in duration-700">
+              <div className="flex justify-center mb-8">
+                <div className="w-24 h-24 border-4 border-utonga-accent/20 border-t-utonga-accent rounded-full animate-spin"></div>
+              </div>
+              <h2 className="text-3xl font-bold text-white">Secure Payment in Progress</h2>
+              <p className="text-gray-400 max-w-sm mx-auto">
+                Please complete your donation in the secure payment window. This page will update automatically once verified.
+              </p>
+              <button
+                onClick={() => fetchLiveDonationStatus(stewardId)}
+                className="text-utonga-accent text-sm font-bold uppercase tracking-widest hover:underline"
+              >
+                Already paid? Click here to refresh
+              </button>
+            </div>
+          );
+        }
 
         return (
           <div className="text-center py-12 space-y-8 animate-in fade-in zoom-in duration-700">

@@ -6,6 +6,18 @@ const PhoneInput = PhoneInputPkg.default || PhoneInputPkg;
 import 'react-phone-input-2/lib/style.css';
 import api from '../api';
 
+const SproutIcon = () => (
+  <svg viewBox="0 0 200 200" className="w-full h-full" fill="none">
+    <path d="M100 180 Q100 140 100 100 Q100 70 100 50"
+      stroke="currentColor" strokeWidth="4" strokeLinecap="round"
+      className="text-utonga-accent sprout-stem" />
+    <path d="M100 90 Q70 80 60 60 Q85 65 100 90"
+      fill="currentColor" className="text-utonga-accent sprout-leaf sprout-leaf-left" />
+    <path d="M100 70 Q130 60 140 40 Q115 45 100 70"
+      fill="currentColor" className="text-utonga-accent sprout-leaf sprout-leaf-right" />
+  </svg>
+);
+
 const DonationFlow = () => {
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState(1);
@@ -303,7 +315,7 @@ const DonationFlow = () => {
           <div className="text-center py-12 space-y-8 animate-in fade-in zoom-in duration-700">
             <div className="flex justify-center mb-4">
               <div className="w-64 h-64 relative flex items-center justify-center">
-                <Trees size={96} className="text-utonga-accent animate-pulse" />
+                <SproutIcon />
                 <div className="absolute inset-0 bg-utonga-accent/10 blur-3xl -z-10 rounded-full"></div>
               </div>
             </div>
@@ -367,6 +379,22 @@ const DonationFlow = () => {
         </div>
 
         <style>{`
+          .sprout-stem {
+            stroke-dasharray: 140;
+            stroke-dashoffset: 140;
+            animation: draw-stem 1.2s ease-out forwards;
+          }
+          .sprout-leaf {
+            opacity: 0;
+            transform-origin: bottom center;
+            transform: scale(0);
+            animation: unfurl-leaf 0.6s ease-out forwards;
+          }
+          .sprout-leaf-left { animation-delay: 0.9s; }
+          .sprout-leaf-right { animation-delay: 1.1s; }
+          @keyframes draw-stem { to { stroke-dashoffset: 0; } }
+          @keyframes unfurl-leaf { to { opacity: 1; transform: scale(1); } }
+
           .phone-input-container .react-tel-input .selected-flag {
             background: transparent !important;
             padding-left: 12px !important;

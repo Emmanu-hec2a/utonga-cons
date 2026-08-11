@@ -11,6 +11,7 @@ import Visit from './pages/Visit';
 import Partner from './pages/Partner';
 import GetInvolved from './pages/GetInvolved';
 import Legal from './pages/Legal';
+import VerificationPortal from './pages/VerificationPortal';
 import Footer from './components/Footer';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import UtongaAssistant from './components/UtongaAssistant';
@@ -76,6 +77,7 @@ function AppRoutes() {
       <Route path="/explore/visit" element={<MainLayout><Visit /></MainLayout>} />
       <Route path="/explore/partner" element={<MainLayout><Partner /></MainLayout>} />
       <Route path="/explore/get-involved" element={<MainLayout><GetInvolved /></MainLayout>} />
+      <Route path="/verify/:donationId" element={<MainLayout><VerificationPortal /></MainLayout>} />
 
       {/* Staff Routes - Completely Separate */}
       <Route path="/staff/login" element={<StaffLogin />} />

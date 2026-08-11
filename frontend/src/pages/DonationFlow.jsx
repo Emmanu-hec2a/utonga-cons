@@ -1,28 +1,14 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import { CreditCard, Smartphone, Building, QrCode, CheckCircle, ArrowLeft, ArrowRight, Loader2, Download, Share2, Heart, Trees } from 'lucide-react';
 import { useSearchParams, Link } from 'react-router-dom';
 import treeAnimation from '../assets/animations/tree-sprout.json';
 import PhoneInputPkg from 'react-phone-input-2';
 const PhoneInput = PhoneInputPkg.default || PhoneInputPkg;
+import LottiePkg from 'lottie-react';
+const Lottie = LottiePkg.default || LottiePkg;
 import 'react-phone-input-2/lib/style.css';
 import api from '../api';
 
-// Lazy-loaded so lottie-web (and its eval-based expression engine) only ships
-// to visitors who actually reach the donation success screen, not the
-// initial bundle every visitor downloads.
-//
-// React.lazy() requires its resolved default to be a plain function or
-// class — it rejects React's other special component types outright,
-// including anything wrapped in React.memo()/forwardRef(), even though
-// those render fine in normal JSX. lottie-react's component is memo-wrapped
-// internally, so we resolve to a plain function that simply renders the
-// real component as a child, rather than handing the memo object to
-// lazy() directly.
-const Lottie = lazy(async () => {
-  const mod = await import('lottie-react');
-  const LottieComponent = mod.default || mod;
-  return { default: (props) => <LottieComponent {...props} /> };
-});
 console.log('Lottie resolved as:', typeof Lottie, Lottie);
 
 const DonationFlow = () => {
@@ -323,13 +309,7 @@ const DonationFlow = () => {
             <div className="flex justify-center mb-4">
               <div className="w-64 h-64 relative">
                 {treeAnimation && (
-                  <Suspense fallback={<div className="w-full h-full" />}>
-                    <Lottie
-                      animationData={treeAnimation}
-                      loop={false}
-                      className="w-full h-full"
-                    />
-                  </Suspense>
+                  <Lottie animationData={treeAnimation} loop={false} className="w-full h-full" />
                 )}
                 <div className="absolute inset-0 bg-utonga-accent/10 blur-3xl -z-10 rounded-full"></div>
               </div>

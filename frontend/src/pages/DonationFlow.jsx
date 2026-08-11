@@ -23,6 +23,7 @@ const Lottie = lazy(async () => {
   const LottieComponent = mod.default || mod;
   return { default: (props) => <LottieComponent {...props} /> };
 });
+console.log('Lottie resolved as:', typeof Lottie, Lottie);
 
 const DonationFlow = () => {
   const [searchParams] = useSearchParams();

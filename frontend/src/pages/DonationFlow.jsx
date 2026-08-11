@@ -1,15 +1,10 @@
 import { useState, useEffect } from 'react';
 import { CreditCard, Smartphone, Building, QrCode, CheckCircle, ArrowLeft, ArrowRight, Loader2, Download, Share2, Heart, Trees } from 'lucide-react';
 import { useSearchParams, Link } from 'react-router-dom';
-import treeAnimation from '../assets/animations/tree-sprout.json';
 import PhoneInputPkg from 'react-phone-input-2';
 const PhoneInput = PhoneInputPkg.default || PhoneInputPkg;
-import LottiePkg from 'lottie-react';
-const Lottie = LottiePkg.default || LottiePkg;
 import 'react-phone-input-2/lib/style.css';
 import api from '../api';
-
-console.log('Lottie resolved as:', typeof Lottie, Lottie);
 
 const DonationFlow = () => {
   const [searchParams] = useSearchParams();
@@ -307,10 +302,8 @@ const DonationFlow = () => {
         return (
           <div className="text-center py-12 space-y-8 animate-in fade-in zoom-in duration-700">
             <div className="flex justify-center mb-4">
-              <div className="w-64 h-64 relative">
-                {treeAnimation && (
-                  <Lottie animationData={treeAnimation} loop={false} className="w-full h-full" />
-                )}
+              <div className="w-64 h-64 relative flex items-center justify-center">
+                <Trees size={96} className="text-utonga-accent animate-pulse" />
                 <div className="absolute inset-0 bg-utonga-accent/10 blur-3xl -z-10 rounded-full"></div>
               </div>
             </div>

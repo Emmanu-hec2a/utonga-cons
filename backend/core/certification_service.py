@@ -17,6 +17,15 @@ class CertificationService:
         Generates a high-fidelity 'Sanctuary Steward' certificate for a donor.
         Returns a BytesIO buffer containing the PDF data.
         """
+        # Register Calligraphy Font
+        font_path = os.path.join(settings.BASE_DIR, 'core', 'assets', 'fonts', 'GreatVibes.ttf')
+        try:
+            pdfmetrics.registerFont(TTFont('GreatVibes', font_path))
+            calligraphy_font = 'GreatVibes'
+        except Exception as e:
+            print(f"Font registration error: {e}")
+            calligraphy_font = 'Helvetica-Bold' # Fallback
+
         buffer = io.BytesIO()
         
         # Setup landscape A4
@@ -43,17 +52,18 @@ class CertificationService:
         c.setFillColor(colors.black)
         c.drawCentredString(width / 2, height - 160, "OFFICIAL RECOGNITION OF CONSERVATION IMPACT")
 
-        # --- Body ---
+        # Body ---
         c.setFont("Helvetica-Oblique", 18)
         c.drawCentredString(width / 2, height - 240, "This is to certify that")
         
-        # Donor Name (Large & Bold with Dynamic Sizing to prevent breaking)
-        donor_name = str(donation.donor_name).upper()
-        name_font_size = 48
-        if len(donor_name) > 20: name_font_size = 36
-        if len(donor_name) > 30: name_font_size = 28
+        # Donor Name (Calligraphy Style with Dynamic Sizing)
+        # Using Title Case for Calligraphy fonts as it looks much more premium
+        donor_name = str(donation.donor_name).title()
+        name_font_size = 64 # Script fonts can be larger
+        if len(donor_name) > 20: name_font_size = 48
+        if len(donor_name) > 30: name_font_size = 36
         
-        c.setFont("Helvetica-Bold", name_font_size)
+        c.setFont(calligraphy_font, name_font_size)
         c.setFillColor(colors.HexColor("#1A1A1A"))
         c.drawCentredString(width / 2, height - 300, donor_name)
         

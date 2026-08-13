@@ -8,13 +8,22 @@ import api from '../api';
 
 const SproutIcon = () => (
   <svg viewBox="0 0 200 200" className="w-full h-full" fill="none">
-    <path d="M100 180 Q100 140 100 100 Q100 70 100 50"
+    {/* Stem - Reduced height (from y:180 to y:160, and top from 50 to 70) */}
+    <path d="M100 160 Q100 130 100 100 Q100 85 100 70"
       stroke="currentColor" strokeWidth="4" strokeLinecap="round"
       className="text-utonga-accent sprout-stem" />
+
+    {/* Original Leaves */}
     <path d="M100 90 Q70 80 60 60 Q85 65 100 90"
       fill="currentColor" className="text-utonga-accent sprout-leaf sprout-leaf-left" />
     <path d="M100 70 Q130 60 140 40 Q115 45 100 70"
       fill="currentColor" className="text-utonga-accent sprout-leaf sprout-leaf-right" />
+
+    {/* Added Tip Leaves for extra lushness */}
+    <path d="M100 75 Q85 65 80 50 Q95 55 100 75"
+      fill="currentColor" className="text-utonga-accent sprout-leaf sprout-leaf-top-left" />
+    <path d="M100 72 Q115 62 120 48 Q105 53 100 72"
+      fill="currentColor" className="text-utonga-accent sprout-leaf sprout-leaf-top-right" />
   </svg>
 );
 
@@ -312,26 +321,26 @@ const DonationFlow = () => {
         }
 
         return (
-          <div className="text-center py-12 space-y-8 animate-in fade-in zoom-in duration-700">
-            <div className="flex justify-center mb-4">
-              <div className="w-64 h-64 relative flex items-center justify-center">
+          <div className="text-center py-4 space-y-6 animate-in fade-in zoom-in duration-700">
+            <div className="flex justify-center -mb-4">
+              <div className="w-48 h-48 relative flex items-center justify-center">
                 <SproutIcon />
                 <div className="absolute inset-0 bg-utonga-accent/10 blur-3xl -z-10 rounded-full"></div>
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-2">
               <h2 className="text-4xl md:text-5xl font-black text-white leading-tight">
                 Welcome, <span className="text-utonga-accent italic">Sanctuary Steward.</span>
               </h2>
-              <div className="text-gray-400 max-w-md mx-auto text-lg">
+              <div className="text-gray-400 max-w-md mx-auto text-base">
                 Your contribution has taken root. You just planted
                 <span className="text-white font-bold px-2">{treeCount} indigenous {Number(treeCount) === 1 ? 'tree' : 'trees'}</span>
                 in the heart of Utonga.
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-4">
               <button
                 onClick={() => handleDownloadCertificate()}
                 disabled={!stewardId || isWaiting}
@@ -392,6 +401,8 @@ const DonationFlow = () => {
           }
           .sprout-leaf-left { animation-delay: 0.9s; }
           .sprout-leaf-right { animation-delay: 1.1s; }
+          .sprout-leaf-top-left { animation-delay: 1.3s; }
+          .sprout-leaf-top-right { animation-delay: 1.5s; }
           @keyframes draw-stem { to { stroke-dashoffset: 0; } }
           @keyframes unfurl-leaf { to { opacity: 1; transform: scale(1); } }
 

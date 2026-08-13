@@ -62,67 +62,64 @@ const VerificationPortal = () => {
           </div>
         </div>
 
-        <div className="bg-white/[0.02] border border-white/[0.05] rounded-[2.5rem] p-8 md:p-12 backdrop-blur-xl relative overflow-hidden">
-          {/* Ambient Glow */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-utonga-accent/5 blur-[100px] -z-10 rounded-full" />
+        <div className="space-y-12">
+          <header className="text-center md:text-left px-4 relative">
+            {/* Ambient Glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-utonga-accent/5 blur-[120px] -z-10 rounded-full" />
 
-          <div className="space-y-12">
-            <header className="text-center md:text-left">
-              <h2 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">
-                Sanctuary <span className="text-utonga-accent italic">Steward.</span>
-              </h2>
-              <p className="text-gray-500 uppercase tracking-widest text-[10px] font-black">Record ID: UTG-{donation.id}-{new Date(donation.created_at).getTime()}</p>
-            </header>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">
+              Sanctuary <span className="text-utonga-accent italic">Steward.</span>
+            </h2>
+            <p className="text-gray-500 uppercase tracking-widest text-[10px] font-black">Record ID: UTG-{donation.id}-{new Date(donation.created_at).getTime()}</p>
+          </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Donor Info */}
-              <div className="bg-white/[0.03] border border-white/[0.05] p-6 rounded-3xl group hover:border-utonga-accent/30 transition-all">
-                <div className="flex items-center gap-4 mb-4 text-gray-500">
-                  <User size={20} />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Authenticated Donor</span>
-                </div>
-                <p className="text-2xl font-bold text-white">{donation.donor_name}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-2">
+            {/* Donor Info */}
+            <div className="bg-white/[0.03] border border-white/[0.05] p-8 rounded-[2rem] backdrop-blur-xl group hover:border-utonga-accent/30 transition-all">
+              <div className="flex items-center gap-4 mb-4 text-gray-500">
+                <User size={20} />
+                <span className="text-[10px] font-black uppercase tracking-widest">Authenticated Donor</span>
               </div>
-
-              {/* Impact Info */}
-              <div className="bg-white/[0.03] border border-white/[0.05] p-6 rounded-3xl group hover:border-utonga-accent/30 transition-all">
-                <div className="flex items-center gap-4 mb-4 text-gray-500">
-                  <Trees size={20} />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Conservation Impact</span>
-                </div>
-                <p className="text-2xl font-bold text-white">{donation.amount} Indigenous Trees</p>
-              </div>
-
-              {/* Date Info */}
-              <div className="bg-white/[0.03] border border-white/[0.05] p-6 rounded-3xl group hover:border-utonga-accent/30 transition-all">
-                <div className="flex items-center gap-4 mb-4 text-gray-500">
-                  <Calendar size={20} />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Entry Date</span>
-                </div>
-                <p className="text-2xl font-bold text-white">{new Date(donation.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-              </div>
-
-              {/* Status Info */}
-              <div className="bg-white/[0.03] border border-white/[0.05] p-6 rounded-3xl">
-                <div className="flex items-center gap-4 mb-4 text-gray-500">
-                  <ShieldCheck size={20} />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Record Status</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  <p className="text-2xl font-bold text-green-500 uppercase tracking-tighter">Verified</p>
-                </div>
-              </div>
+              <p className="text-2xl font-bold text-white">{donation.donor_name}</p>
             </div>
 
-            <div className="pt-8 border-t border-white/5">
-              <p className="text-gray-400 text-center leading-relaxed">
-                This donor is an official custodian of the Utonga Sanctuary. Their contribution has been directly applied to reforestation and biodiversity protection in Bondo, Kenya.
-              </p>
+            {/* Impact Info */}
+            <div className="bg-white/[0.03] border border-white/[0.05] p-8 rounded-[2rem] backdrop-blur-xl group hover:border-utonga-accent/30 transition-all">
+              <div className="flex items-center gap-4 mb-4 text-gray-500">
+                <Trees size={20} />
+                <span className="text-[10px] font-black uppercase tracking-widest">Conservation Impact</span>
+              </div>
+              <p className="text-2xl font-bold text-white">{donation.amount} Indigenous Trees</p>
+            </div>
+
+            {/* Date Info */}
+            <div className="bg-white/[0.03] border border-white/[0.05] p-8 rounded-[2rem] backdrop-blur-xl group hover:border-utonga-accent/30 transition-all">
+              <div className="flex items-center gap-4 mb-4 text-gray-500">
+                <Calendar size={20} />
+                <span className="text-[10px] font-black uppercase tracking-widest">Entry Date</span>
+              </div>
+              <p className="text-2xl font-bold text-white">{new Date(donation.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+            </div>
+
+            {/* Status Info */}
+            <div className="bg-white/[0.03] border border-white/[0.05] p-8 rounded-[2rem] backdrop-blur-xl">
+              <div className="flex items-center gap-4 mb-4 text-gray-500">
+                <ShieldCheck size={20} />
+                <span className="text-[10px] font-black uppercase tracking-widest">Record Status</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                <p className="text-2xl font-bold text-green-500 uppercase tracking-tighter">Verified</p>
+              </div>
             </div>
           </div>
-        </div>
 
+          <div className="pt-8 border-t border-white/5 px-4">
+            <p className="text-gray-400 text-center leading-relaxed max-w-lg mx-auto">
+              This donor is an official custodian of the Utonga Sanctuary. Their contribution has been directly applied to reforestation and biodiversity protection in Bondo, Kenya.
+            </p>
+          </div>
+        </div>
         <div className="mt-12 text-center">
           <Link to="/explore" className="text-utonga-accent font-black uppercase tracking-widest text-xs hover:underline flex items-center justify-center gap-3 group">
             See the impact in the hub <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />

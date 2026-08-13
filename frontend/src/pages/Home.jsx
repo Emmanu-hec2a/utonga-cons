@@ -6,6 +6,7 @@ import RoadmapSection from '../components/RoadmapSection';
 import ExploreSection from '../components/ExploreSection';
 import GetInvolvedSection from '../components/GetInvolvedSection';
 import GalleryGrid from '../components/GalleryGrid';
+import SanctuaryMap from '../components/SanctuaryMap';
 
 const Home = () => {
   const [campaign, setCampaign] = useState(null);
@@ -41,6 +42,7 @@ const Home = () => {
       <ExploreSection />
       <GetInvolvedSection />
       <GalleryGrid />
+      <SanctuaryMap />
     </div>
   );
 };

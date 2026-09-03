@@ -8,7 +8,7 @@ const GetInvolvedSection = () => {
           <span className="text-xs font-black uppercase tracking-[0.3em] text-utonga-accent mb-4 block">Take Action</span>
           <h2 className="text-4xl md:text-6xl font-black mb-6 italic">Get <span className="text-utonga-green">Involved.</span></h2>
           <p className="text-gray-400 text-lg font-medium">
-            Conservation isn't a spectator sport. Whether you're halfway across the world or right here in Homa Bay, there's a place for you in the Utonga story.
+            Conservation isn't a spectator sport. Whether you're halfway across the world or right here in West Sakwa - Bondo, there's a place for you in the Utonga story.
           </p>
         </div>
 

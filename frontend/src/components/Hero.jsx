@@ -103,7 +103,7 @@ const Hero = () => {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl leading-relaxed">
-            Indigenous tropical forest, wetland sanctuaries, and the future of Lake Victoria's biodiversity. $1 = 1 tree planted.
+            A virgin ecosystem where indigenous tropical forests meet the shores of Lake Victoria. $1 = 1 tree planted.
           </p>
           <div className="flex flex-row flex-wrap gap-6 items-center">
             <Link to="/give" className="bg-utonga-green hover:bg-opacity-90 text-white px-10 py-4 rounded-full text-lg font-bold shadow-2xl transition-all">

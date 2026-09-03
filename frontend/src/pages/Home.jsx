@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../api';
 import Hero from '../components/Hero';
 import StatsRow from '../components/StatsRow';
+import SanctuaryPulse from '../components/SanctuaryPulse';
 import RoadmapSection from '../components/RoadmapSection';
 import ExploreSection from '../components/ExploreSection';
 import GetInvolvedSection from '../components/GetInvolvedSection';
@@ -38,6 +39,7 @@ const Home = () => {
           days={campaign.days_left}
         />
       )}
+      <SanctuaryPulse />
       <RoadmapSection milestones={campaign?.roadmap || []} />
       <ExploreSection />
       <GetInvolvedSection />

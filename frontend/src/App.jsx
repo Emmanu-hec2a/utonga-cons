@@ -27,7 +27,10 @@ const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return null;
   if (!user) return <Navigate to="/staff/login" />;
-  if (user.needsPasswordChange) return <Navigate to="/staff/change-password" />;
+
+  // Strict Security: Force password change on first login
+  if (user?.needsPasswordChange) return <Navigate to="/staff/change-password" />;
+
   return children;
 };
 
@@ -80,6 +83,7 @@ function AppRoutes() {
       <Route path="/verify/:donationId" element={<MainLayout><VerificationPortal /></MainLayout>} />
 
       {/* Staff Routes - Completely Separate */}
+      <Route path="/staff" element={<Navigate to="/staff/dashboard" />} />
       <Route path="/staff/login" element={<StaffLogin />} />
       <Route path="/staff/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
       <Route path="/staff/dashboard/*" element={

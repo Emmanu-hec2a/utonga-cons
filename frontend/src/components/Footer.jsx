@@ -38,11 +38,11 @@ const Footer = () => {
             <ul className="space-y-4 text-gray-400 text-sm">
               <li className="flex items-center">
                 <Phone size={16} className="mr-2 text-utonga-accent" />
-                {settings.official_phone || '+254 718 258 821'}
+                {settings.official_phone || '+254 181 552 660'}
               </li>
               <li className="flex items-center">
                 <Mail size={16} className="mr-2 text-utonga-accent" />
-                {settings.official_email || 'sanctuary@utonga.org'}
+                {settings.official_email || 'sanctuary@utongaconservation.org'}
               </li>
               <li className="text-xs leading-relaxed opacity-80">
                 Sitatunga Botanical Garden, Bondo, Siaya - Kenya

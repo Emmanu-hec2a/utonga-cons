@@ -152,18 +152,31 @@ REST_KNOX = {
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173', 
     'https://utonga-cons.utonga.workers.dev',
-    'https://utonga-cons.up.railway.app'
+    'https://utonga-cons.up.railway.app',
+    'https://utongaconservation.org',
+    'https://www.utongaconservation.org'
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173', 
     'https://utonga-cons.utonga.workers.dev',
-    'https://utonga-cons.up.railway.app'
+    'https://utonga-cons.up.railway.app',
+    'https://utongaconservation.org',
+    'https://www.utongaconservation.org'
 ]
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = False  # Allow frontend to read CSRF cookie if needed
+
+# Production Security Hardening
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_SSL_REDIRECT = True
+    X_FRAME_OPTIONS = 'DENY'
 
 # Resend email configuration
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
@@ -171,7 +184,7 @@ RESEND_FROM_EMAIL = os.environ.get('RESEND_FROM_EMAIL', 'onboarding@resend.dev')
 DEFAULT_FROM_EMAIL = RESEND_FROM_EMAIL
 
 # Payment Gateway Configuration
-UTONGA_PRIMARY_DOMAIN = os.environ.get('UTONGA_PRIMARY_DOMAIN', 'https://utonga-cons.utonga.workers.dev')
+UTONGA_PRIMARY_DOMAIN = os.environ.get('UTONGA_PRIMARY_DOMAIN', 'https://utongaconservation.org')
 PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', 'sk_test_4632becfcca3850cfca91878e93c42f1b0122086')
 
 # Telephony Configuration

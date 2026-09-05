@@ -4,23 +4,23 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const images = [
   {
-    url: 'https://images.unsplash.com/photo-1484406566174-9da000fda645?q=70&w=1800&auto=format&fit=crop',
+    url: 'https://images.unsplash.com/photo-1484406566174-9da000fda645?q=80&w=2000&auto=format&fit=crop&fm=webp',
     alt: 'Scenic view of Brown Deer during the golden hour in the Sitatunga conservation area'
   },
   {
-    url: 'https://images.unsplash.com/photo-1496080174650-637e3f22fa03?q=70&w=1800&auto=format&fit=crop',
+    url: 'https://images.unsplash.com/photo-1496080174650-637e3f22fa03?q=70&w=1800&auto=format&fit=crop&fm=webp',
     alt: 'Solitary camp tent under a sunset sky in the Sitatunga conservation area'
   },
   {
-    url: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=70&w=1800&auto=format&fit=crop',
+    url: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=70&w=1800&auto=format&fit=crop&fm=webp',
     alt: 'Lush indigenous tropical forest at sunrise in Utonga Sanctuary'
   },
   {
-    url: 'https://images.unsplash.com/photo-1686109968922-d74e8e03d516?q=70&w=1800&auto=format&fit=crop',
+    url: 'https://images.unsplash.com/photo-1686109968922-d74e8e03d516?q=70&w=1800&auto=format&fit=crop&fm=webp',
     alt: 'Serene wetland sanctuary on the shores of Lake Victoria'
   },
   {
-    url: 'https://images.unsplash.com/photo-1751568928469-4404ca644fa9?q=70&w=1800&auto=format&fit=crop',
+    url: 'https://images.unsplash.com/photo-1751568928469-4404ca644fa9?q=70&w=1800&auto=format&fit=crop&fm=webp',
     alt: 'Serene wetland sanctuary on the shores of Lake Victoria'
   }
 ];

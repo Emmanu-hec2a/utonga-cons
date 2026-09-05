@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 from core import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('utonga-hq-portal/', admin.site.urls),
     path('api/', include('core.urls')),
     path('api/weather/', views.get_sanctuary_weather, name='weather'),
     path('api/donations/<int:donation_id>/certificate/', views.download_certificate, name='download_certificate'),

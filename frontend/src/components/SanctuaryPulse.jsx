@@ -57,10 +57,12 @@ const SanctuaryPulse = () => {
               className="group relative p-8 rounded-[2rem] bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] hover:border-utonga-accent/30 transition-all duration-500 flex flex-col justify-between h-[320px]"
             >
               <div>
-                <div className="mb-6 w-12 h-12 rounded-2xl bg-white/[0.05] flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                  {eco.icon}
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-white/[0.05] flex items-center justify-center group-hover:scale-110 transition-transform duration-500 flex-shrink-0">
+                    {eco.icon}
+                  </div>
+                  <h4 className="text-xl font-bold text-white leading-tight">{eco.title}</h4>
                 </div>
-                <h4 className="text-xl font-bold text-white mb-4">{eco.title}</h4>
                 <p className="text-sm text-white/40 leading-relaxed group-hover:text-white/70 transition-colors">
                   {eco.desc}
                 </p>

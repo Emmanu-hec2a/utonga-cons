@@ -3,9 +3,9 @@ import { ArrowRight } from 'lucide-react';
 
 const ExploreSection = () => {
   const cards = [
-    { title: "Visit & Book", desc: "Reserve a day visit, guided tour, or overnight stay with our lakeside team.", link: "/explore/visit", img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070" },
-    { title: "Partner with Us", desc: "Tour operators, diaspora community, and capital investors for Phase 2.", link: "/explore/partner", img: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?q=80&w=2070" },
-    { title: "Get Involved", desc: "Join our hiking clubs or volunteer for reforestation efforts.", link: "/explore/get-involved", img: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=2013" }
+    { title: "Visit & Book", desc: "Reserve a day visit, guided tour, or overnight stay with our lakeside team.", link: "/explore/visit", img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1200&auto=format&fm=webp" },
+    { title: "Partner with Us", desc: "Tour operators, diaspora community, and capital investors for Phase 2.", link: "/explore/partner", img: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?q=80&w=1200&auto=format&fm=webp" },
+    { title: "Get Involved", desc: "Join our hiking clubs or volunteer for reforestation efforts.", link: "/explore/get-involved", img: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=1200&auto=format&fm=webp" }
   ];
 
   return (

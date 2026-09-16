@@ -2,8 +2,8 @@ from rest_framework import viewsets, generics, status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from django.contrib.auth import authenticate, login, update_last_login
-from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User, update_last_login
 from knox.models import AuthToken
 from knox.auth import TokenAuthentication
 from .models import (

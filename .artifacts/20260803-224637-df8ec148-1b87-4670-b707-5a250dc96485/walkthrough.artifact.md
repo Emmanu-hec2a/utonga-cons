@@ -12,11 +12,13 @@ I have finalized the secure staff authentication flow, ensuring that every team 
 - **Security Upgrade**: Previously, only superusers were prompted to change passwords. Now, **any staff member** with a `None` last login (newly created accounts) will be routed to the secure Change Password screen.
 - **Backend Validation**: Added a minimum 8-character check to the backend password update logic.
 
-### 3. High-Fidelity Validation UI
+### 3. High-Fidelity Validation UI & Stability Fixes
+- **Resolved Redirection Loop**: Fixed a critical UI bug where the `ProtectedRoute` was causing an infinite loop on the `/staff/change-password` page. The route now correctly detects when a user is already on the change screen, allowing the form to render instead of blanking out.
 - **Frontend Guardrails**: Updated [ChangePassword.jsx](file:///C:/Users/PC/Desktop/Utonga/frontend/src/pages/Staff/ChangePassword.jsx) to include:
     - Minimum 8-character length validation.
     - Matching password verification.
     - Clear, descriptive error messaging for failed updates.
+- **Improved Loading UX**: Added a consistent `min-h-screen` background to the Auth loading state to prevent layout flickering during session validation.
 
 ### 4. Security Audit Logging
 - Every password change is now automatically recorded in the `AuditLogEntry` table, providing a trail of security events for the admin portal.

@@ -25,11 +25,16 @@ import ChangePassword from './pages/Staff/ChangePassword';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading) return null;
+  const location = useLocation();
+
+  if (loading) return <div className="min-h-screen bg-utonga-dark" />;
   if (!user) return <Navigate to="/staff/login" />;
 
   // Strict Security: Force password change on first login
-  if (user?.needsPasswordChange) return <Navigate to="/staff/change-password" />;
+  // But DON'T redirect if we are already on the change-password page!
+  if (user?.needsPasswordChange && location.pathname !== '/staff/change-password') {
+    return <Navigate to="/staff/change-password" />;
+  }
 
   return children;
 };

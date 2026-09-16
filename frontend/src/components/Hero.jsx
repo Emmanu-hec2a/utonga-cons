@@ -4,8 +4,8 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const images = [
   {
-    url: 'https://images.unsplash.com/photo-1484406566174-9da000fda645?q=80&w=2000&auto=format&fit=crop&fm=webp',
-    alt: 'Scenic view of Brown Deer during the golden hour in the Sitatunga conservation area'
+    url: 'https://images.unsplash.com/photo-1634627931673-8ccd2dcab227?w=2000&auto=format&fit=crop&q=80&ixlib=rb-4.1.0',
+    alt: 'Rare Sitatunga antelope in the pristine wetland sanctuary of Utonga'
   },
   {
     url: 'https://images.unsplash.com/photo-1496080174650-637e3f22fa03?q=70&w=1800&auto=format&fit=crop&fm=webp',

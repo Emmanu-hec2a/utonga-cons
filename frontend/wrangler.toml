@@ -7,5 +7,5 @@ not_found_handling = "single-page-application"
 
 [vars]
 # The base URL for your deployed Django backend
-VITE_API_BASE_URL = "https://utonga-cons.up.railway.app"
+VITE_API_BASE_URL = "https://api.utongaconservation.org"
 VITE_GOOGLE_MAPS_API_KEY = "AIzaSyChc8grsBxxWDqpvWXVwW3uuqOy7edCaxM"

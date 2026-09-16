@@ -12,15 +12,23 @@ const ChangePassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
+    if (newPassword.length < 8) {
+      setError('Password must be at least 8 characters');
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
+
     try {
       await changePassword(newPassword, confirmPassword);
       navigate('/staff/dashboard');
     } catch (err) {
-      setError('Failed to update password');
+      setError(err.message || 'Failed to update password');
     }
   };
 

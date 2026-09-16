@@ -2,7 +2,7 @@ from rest_framework import viewsets, generics, status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, update_last_login
 from django.contrib.auth.models import User
 from knox.models import AuthToken
 from knox.auth import TokenAuthentication
@@ -36,6 +36,12 @@ def admin_login(request):
     password = request.data.get('password')
     user = authenticate(request, username=username, password=password)
     if user is not None:
+        # Check for first-time login BEFORE updating last_login
+        needs_password_change = user.last_login is None
+        
+        # Update last_login so next time needs_password_change is false
+        update_last_login(None, user)
+        
         # Create token
         _, token = AuthToken.objects.create(user)
         
@@ -46,7 +52,6 @@ def admin_login(request):
         elif user.is_superuser:
             role = 'admin'
 
-        needs_password_change = user.is_superuser and user.last_login is None
         return Response({
             'success': True,
             'token': token,
@@ -62,11 +67,25 @@ def admin_login(request):
 def admin_change_password(request):
     new_password = request.data.get('new_password')
     confirm_password = request.data.get('confirm_password')
+    
+    if len(new_password) < 8:
+        return Response({'error': 'Password must be at least 8 characters'}, status=status.HTTP_400_BAD_REQUEST)
+        
     if new_password != confirm_password:
         return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
     
     request.user.set_password(new_password)
     request.user.save()
+    
+    # Audit log for security
+    AuditLogEntry.objects.create(
+        actor=request.user,
+        action='password_change',
+        model_name='User',
+        object_id=str(request.user.id),
+        changes={'info': 'Password updated by user'}
+    )
+
     return Response({'success': 'Password updated'})
 
 class DonationAdminViewSet(viewsets.ModelViewSet):

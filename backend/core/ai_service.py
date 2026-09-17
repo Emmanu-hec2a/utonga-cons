@@ -32,8 +32,12 @@ class UtongaAIService:
 
     def __init__(self):
         # Switched to NetMind Qwen API for high performance and low cost
-        self.api_key = "0db3c49c8fa24dfd844f656c471f84b9"
+        self.api_key = getattr(settings, 'NETMIND_API_KEY', None)
         
+        if not self.api_key:
+            self.client = None
+            return
+
         try:
             self.client = openai.OpenAI(
                 api_key=self.api_key,

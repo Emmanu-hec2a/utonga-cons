@@ -23,6 +23,11 @@ I have finalized the secure staff authentication flow, ensuring that every team 
 ### 4. Security Audit Logging
 - Every password change is now automatically recorded in the `AuditLogEntry` table, providing a trail of security events for the admin portal.
 
+### 5. High-Performance AI Integration
+- **Model Upgrade**: Switched the Utonga Assistant to the `deepseek-ai/DeepSeek-V4.1-Flash` model via NetMind. This ensures lightning-fast inference and stable serverless availability for all sanctuary visitors.
+- **Environment-Based Config**: Migrated the AI API key to environment variables (`NETMIND_API_KEY`), following production-ready security standards.
+- **Dynamic Context**: The assistant remains fully synchronized with live data, including donation totals, roadmap milestones, and real-time sanctuary weather.
+
 ## Verification Results
 
 - [x] **Database Audit**: Verified that `last_login` timestamps are successfully updating in the `auth_user` table.

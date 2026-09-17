@@ -96,12 +96,12 @@ class UtongaAIService:
         messages.append({"role": "user", "content": message})
 
         try:
-            # Using Qwen 2.5 7B Instruct via NetMind
+            # Using DeepSeek V4.1 Flash via NetMind for high speed and reliability
             response = self.client.chat.completions.create(
-                model="Qwen/Qwen2.5-7B-Instruct",
+                model="deepseek-ai/DeepSeek-V4.1-Flash",
                 messages=messages,
                 temperature=0.7,
-                max_tokens=300
+                max_tokens=512
             )
             return response.choices[0].message.content
         except Exception as e:

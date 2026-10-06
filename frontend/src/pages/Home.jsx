@@ -37,6 +37,7 @@ const Home = () => {
           goal={campaign.goal_usd}
           trees={campaign.trees_pledged}
           days={campaign.days_left}
+          donors={campaign.active_donors}
         />
       )}
       <SanctuaryPulse />

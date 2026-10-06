@@ -236,6 +236,38 @@ def get_donation_status(request, donation_id):
     from .models import Donation
     from .serializers import DonationSerializer
     donation = get_object_or_404(Donation, id=donation_id)
+
+    # Auto-verify with Paystack API if status is pending and provider reference exists
+    if donation.status == 'pending' and donation.provider_reference and getattr(settings, 'PAYSTACK_SECRET_KEY', None):
+        try:
+            headers = {
+                "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}",
+            }
+            response = requests.get(
+                f"https://api.paystack.co/transaction/verify/{donation.provider_reference}",
+                headers=headers,
+                timeout=5
+            )
+            res_data = response.json()
+            if res_data.get('status') and res_data.get('data', {}).get('status') == 'success':
+                payment_data = res_data['data']
+                paid_currency = payment_data.get('currency')
+
+                with transaction.atomic():
+                    donation.refresh_from_db()
+                    if donation.status != 'completed':
+                        donation.status = 'completed'
+                        if paid_currency:
+                            donation.currency = paid_currency
+                        donation.save()
+                        try:
+                            from .tasks import send_receipt_email
+                            send_receipt_email.delay(donation.id)
+                        except Exception as e:
+                            logger.error(f"Failed to trigger receipt email during auto-verify for donation {donation.id}: {e}")
+        except Exception as e:
+            logger.warning(f"Auto-verification check failed for donation {donation_id}: {e}")
+
     serializer = DonationSerializer(donation)
     return Response(serializer.data)
 

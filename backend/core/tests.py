@@ -205,3 +205,40 @@ class PaystackIntegrationTests(TestCase):
         # Campaign should ONLY be incremented ONCE ($25.00), not twice ($50.00)
         self.campaign.refresh_from_db()
         self.assertEqual(self.campaign.raised_usd, Decimal('25.00'))
+
+    @patch('core.views.requests.get')
+    def test_get_donation_status_auto_verifies_pending_payment_with_paystack(self, mock_get):
+        donation = Donation.objects.create(
+            amount=Decimal('10.00'),
+            currency='USD',
+            method='mpesa',
+            provider='paystack',
+            provider_reference='UTG_AUTO_VERIFY_123',
+            donor_email='mpesa_donor@example.com',
+            donor_name='Mpesa Donor',
+            status='pending'
+        )
+
+        mock_get.return_value.status_code = 200
+        mock_get.return_value.json.return_value = {
+            'status': True,
+            'data': {
+                'status': 'success',
+                'reference': 'UTG_AUTO_VERIFY_123',
+                'amount': 13000,
+                'currency': 'KES'
+            }
+        }
+
+        with self.settings(PAYSTACK_SECRET_KEY=self.secret_key):
+            response = self.client.get(f'/api/donations/{donation.id}/status/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['status'], 'completed')
+
+        donation.refresh_from_db()
+        self.assertEqual(donation.status, 'completed')
+        self.assertEqual(donation.currency, 'KES')
+
+        self.campaign.refresh_from_db()
+        self.assertEqual(self.campaign.raised_usd, Decimal('10.00'))

@@ -7,10 +7,11 @@ from .models import (
 class CampaignSerializer(serializers.ModelSerializer):
     days_left = serializers.SerializerMethodField()
     trees_pledged = serializers.SerializerMethodField()
+    active_donors = serializers.SerializerMethodField()
 
     class Meta:
         model = Campaign
-        fields = ['goal_usd', 'tree_goal', 'cost_per_tree', 'raised_usd', 'deadline', 'days_left', 'trees_pledged']
+        fields = ['goal_usd', 'tree_goal', 'cost_per_tree', 'raised_usd', 'deadline', 'days_left', 'trees_pledged', 'active_donors']
 
     def get_days_left(self, obj):
         from django.utils import timezone
@@ -19,6 +20,11 @@ class CampaignSerializer(serializers.ModelSerializer):
 
     def get_trees_pledged(self, obj):
         return int(obj.raised_usd / obj.cost_per_tree) if obj.cost_per_tree > 0 else 0
+
+    def get_active_donors(self, obj):
+        from .models import Donation
+        # Count completed donations
+        return Donation.objects.filter(status='completed').count()
 
 class RoadmapMilestoneSerializer(serializers.ModelSerializer):
     class Meta:

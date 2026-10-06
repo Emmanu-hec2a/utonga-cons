@@ -1,4 +1,4 @@
-const StatsRow = ({ raised, goal, trees, days }) => {
+const StatsRow = ({ raised, goal, trees, days, donors }) => {
   const percentage = Math.min(100, Math.max(0, Math.round((raised / goal) * 100) || 0));
 
   return (
@@ -56,7 +56,7 @@ const StatsRow = ({ raised, goal, trees, days }) => {
           </div>
 
           <div className="bg-white/[0.02] border border-white/5 p-6 md:p-8 rounded-2xl md:rounded-3xl group hover:bg-white/[0.04] transition-all">
-            <p className="text-2xl md:text-4xl font-black text-white mb-1 md:mb-2">1,240</p>
+            <p className="text-2xl md:text-4xl font-black text-white mb-1 md:mb-2">{Number(donors || 0).toLocaleString()}</p>
             <p className="text-gray-500 uppercase tracking-[0.2em] text-[9px] md:text-[10px] font-black group-hover:text-white transition-colors">Active Donors</p>
             <div className="mt-3 md:mt-4 w-10 md:w-12 h-0.5 bg-white opacity-30"></div>
           </div>

@@ -28,21 +28,53 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         h1 { font-size: 14px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 900; }
+        p { color: #888; font-size: 12px; margin-top: 10px; max-width: 300px; }
     </style>
 </head>
 <body>
     <div class="loader"></div>
-    <h1>Payment Verified</h1>
-    <p style="color: #666; font-size: 10px; margin-top: 10px;">Safe to close this window. Return to the main sanctuary hub.</p>
+    <h1 id="status-title">Verifying Payment...</h1>
+    <p id="status-sub">Please wait while we confirm your sanctuary contribution.</p>
 
     <script>
-        // High-Fidelity Sync:
-        // This window is a "Cleanup Bridge".
-        // 1. It lets the user know it's done.
-        // 2. It attempts to self-close to return the user to the main tab.
-        setTimeout(() => {
-            window.close();
-        }, 2500);
+        (async function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const ref = urlParams.get('reference') || urlParams.get('trxref');
+            let donationId = null;
+
+            if (ref && ref.startsWith('UTG_')) {
+                const parts = ref.split('_');
+                if (parts.length >= 2) {
+                    donationId = parts[1];
+                }
+            }
+
+            if (donationId) {
+                try {
+                    // Trigger backend auto-verification with Paystack
+                    const apiBase = window.location.origin.includes('localhost')
+                        ? 'http://localhost:8000'
+                        : (window.location.origin.includes('utongaconservation.org')
+                            ? 'https://api.utongaconservation.org'
+                            : 'https://utonga-cons.up.railway.app');
+
+                    await fetch(`${apiBase}/api/donations/${donationId}/status/`);
+                } catch (err) {
+                    console.error('Auto verification error:', err);
+                }
+            }
+
+            document.getElementById('status-title').textContent = 'Payment Verified';
+            document.getElementById('status-sub').textContent = 'Redirecting back to Utonga Sanctuary...';
+
+            setTimeout(() => {
+                if (donationId) {
+                    window.location.href = `/give?status=success&id=${donationId}`;
+                } else {
+                    window.location.href = '/give';
+                }
+            }, 1200);
+        })();
     </script>
 </body>
 </html>

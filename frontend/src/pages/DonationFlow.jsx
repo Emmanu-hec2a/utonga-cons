@@ -60,7 +60,8 @@ const DonationFlow = () => {
           amount: String(res.data.amount),
           donor_name: String(res.data.donor_name || ''),
           donor_email: String(res.data.donor_email || ''),
-          status: 'completed'
+          status: 'completed',
+          is_waiting: false
         };
         setDonationResult(safeData);
         setAmount(safeData.amount);
@@ -311,10 +312,17 @@ const DonationFlow = () => {
                 Please complete your donation in the secure payment window. This page will update automatically once verified.
               </p>
               <button
+                disabled={isLoadingStatus}
                 onClick={() => fetchLiveDonationStatus(stewardId)}
-                className="text-utonga-accent text-sm font-bold uppercase tracking-widest hover:underline"
+                className="text-utonga-accent text-sm font-bold uppercase tracking-widest hover:underline flex items-center justify-center mx-auto gap-2 disabled:opacity-50"
               >
-                Already paid? Click here to refresh
+                {isLoadingStatus ? (
+                  <>
+                    <Loader2 className="animate-spin" size={16} /> Verifying payment with Paystack...
+                  </>
+                ) : (
+                  'Already paid? Click here to refresh'
+                )}
               </button>
             </div>
           );

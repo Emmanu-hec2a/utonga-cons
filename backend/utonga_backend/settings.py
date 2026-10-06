@@ -12,7 +12,7 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-utonga-local-dev-key-change-in-production-12345')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
@@ -186,9 +186,14 @@ DEFAULT_FROM_EMAIL = RESEND_FROM_EMAIL
 # Payment Gateway Configuration
 UTONGA_PRIMARY_DOMAIN = os.environ.get('UTONGA_PRIMARY_DOMAIN', 'https://utongaconservation.org')
 PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', 'sk_test_4632becfcca3850cfca91878e93c42f1b0122086')
+PAYSTACK_IP_WHITELIST = ['52.31.139.75', '52.49.173.169', '52.214.14.220']
+
+if not DEBUG and PAYSTACK_SECRET_KEY.startswith('sk_test_'):
+    import warnings
+    warnings.warn("CRITICAL: Running in production mode (DEBUG=False) with a Paystack TEST key! Real payments will fail.", RuntimeWarning)
 
 # Telephony Configuration
-UTONGA_API_DOMAIN = os.environ.get('UTONGA_API_DOMAIN', 'https://utonga-cons.up.railway.app')
+UTONGA_API_DOMAIN = os.environ.get('UTONGA_API_DOMAIN', '')
 TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID', '')
 TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN', '')
 TWILIO_FROM_NUMBER = os.environ.get('TWILIO_FROM_NUMBER', '')

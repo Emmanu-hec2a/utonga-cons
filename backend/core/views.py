@@ -3,6 +3,9 @@ import hmac
 import hashlib
 import json
 import os
+import logging
+from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
+from django.db import transaction
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -12,6 +15,8 @@ from django.utils import timezone
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, FileResponse
+
+logger = logging.getLogger(__name__)
 from .certification_service import CertificationService
 from .weather_service import WeatherService
 from .email_utils import send_resend_email
@@ -115,6 +120,7 @@ class VolunteerSignupCreateView(generics.CreateAPIView):
             f"A new volunteer signup was submitted.\nName: {volunteer.name}\nEmail: {volunteer.contact_email}\nLocation: {volunteer.location}\nInterest: {volunteer.interest}\nSkills: {volunteer.skills}",
         )
 
+@csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def paystack_webhook(request):
@@ -122,13 +128,16 @@ def paystack_webhook(request):
     signature = request.META.get('HTTP_X_PAYSTACK_SIGNATURE')
     secret = getattr(settings, 'PAYSTACK_SECRET_KEY', '')
 
+    if not secret or not signature:
+        return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+
     computed_hmac = hmac.new(
         secret.encode('utf-8'),
         payload,
         hashlib.sha512
     ).hexdigest()
 
-    if computed_hmac != signature:
+    if not hmac.compare_digest(computed_hmac, signature):
         return Response({'error': 'Invalid signature'}, status=status.HTTP_400_BAD_REQUEST)
 
     data = json.loads(payload.decode('utf-8'))
@@ -137,20 +146,50 @@ def paystack_webhook(request):
     if event == 'charge.success':
         payment_data = data.get('data', {})
         reference = payment_data.get('reference')
-        try:
-            donation = Donation.objects.get(provider_reference=reference)
-            donation.status = 'completed'
-            donation.save()
-            # If celery is running, send receipt
-            try:
-                from .tasks import send_receipt_email
-                send_receipt_email.delay(donation.id)
-            except Exception:
-                pass
-        except Donation.DoesNotExist:
-            pass
+        paid_amount_minor = payment_data.get('amount')
+        paid_currency = payment_data.get('currency', 'USD')
+        
+        if not reference:
+            return Response({'error': 'Reference missing'}, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response({'status': 'success'})
+        try:
+            with transaction.atomic():
+                donation = Donation.objects.select_for_update().get(provider_reference=reference)
+                
+                # Check status idempotency
+                if donation.status != 'completed':
+                    # Calculate expected amount in minor units
+                    from .currency_service import ZERO_DECIMAL_CURRENCIES
+                    if paid_currency in ZERO_DECIMAL_CURRENCIES:
+                        expected_minor = int(donation.amount)
+                    else:
+                        expected_minor = int((Decimal(str(donation.amount)) * Decimal('100')).quantize(Decimal('1'), rounding=ROUND_HALF_UP))
+
+                    # Amount Verification Guard
+                    if paid_amount_minor is not None and paid_amount_minor < expected_minor:
+                        logger.warning(
+                            f"Paystack payment underpaid for donation {donation.id}. "
+                            f"Paid: {paid_amount_minor}, Expected: {expected_minor}"
+                        )
+                        donation.status = 'failed'
+                        donation.save(update_fields=['status'])
+                        return Response({'error': 'Underpaid transaction rejected'}, status=status.HTTP_400_BAD_REQUEST)
+
+                    donation.status = 'completed'
+                    if paid_currency:
+                        donation.currency = paid_currency
+                    donation.save()
+
+                    try:
+                        from .tasks import send_receipt_email
+                        send_receipt_email.delay(donation.id)
+                    except Exception as e:
+                        logger.error(f"Failed to trigger receipt email for donation {donation.id}: {e}")
+
+        except Donation.DoesNotExist:
+            logger.warning(f"Paystack webhook reference not found: {reference}")
+
+    return Response({'status': 'success'}, status=status.HTTP_200_OK)
 
 from .ai_service import UtongaAIService
 
@@ -247,17 +286,26 @@ def get_sanctuary_weather(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def initiate_donation(request):
-    amount = request.data.get('amount')
+    raw_amount = request.data.get('amount')
     method = request.data.get('method') # card, mpesa, mobile_money, etc.
     email = request.data.get('donor_email')
     name = request.data.get('donor_name')
     phone = request.data.get('phone_number', '')
 
-    if not all([amount, method, email, name]):
+    if not all([raw_amount, method, email, name]):
         return Response({'error': 'Missing required fields'}, status=status.HTTP_400_BAD_REQUEST)
 
+    # Safe Decimal Parsing & Validation
+    try:
+        amount_decimal = Decimal(str(raw_amount)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        if amount_decimal <= Decimal('0.00'):
+            return Response({'error': 'Amount must be greater than zero'}, status=status.HTTP_400_BAD_REQUEST)
+    except (InvalidOperation, TypeError, ValueError):
+        return Response({'error': 'Invalid amount value'}, status=status.HTTP_400_BAD_REQUEST)
+
     donation = Donation.objects.create(
-        amount=amount,
+        amount=amount_decimal,
+        currency='USD',
         method=method,
         donor_email=email,
         donor_name=name,
@@ -267,26 +315,24 @@ def initiate_donation(request):
 
     domain = getattr(settings, 'UTONGA_PRIMARY_DOMAIN', 'https://utongoconservation.org')
 
-    # Core Logic: Live Global Currency Engine
-    def initialize_transaction(target_currency, target_amount, channels, is_fallback=False):
+    def initialize_transaction(target_currency, target_amount_minor, channels, is_fallback=False):
         headers = {
             "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}",
             "Content-Type": "application/json"
         }
         
-        # We point to a dedicated "Cleanup" page that tells the user it's safe to return
         callback_url = f"{domain}/paystack_callback.html"
 
         data = {
             "email": email,
-            "amount": target_amount,
+            "amount": target_amount_minor,
             "currency": target_currency,
             "channels": channels,
             "reference": f"UTG_{donation.id}_{int(timezone.now().timestamp())}{'_FB' if is_fallback else ''}",
             "callback_url": callback_url,
             "metadata": {
                 "donation_id": donation.id,
-                "original_amount_usd": amount,
+                "original_amount_usd": str(amount_decimal),
                 "is_fallback": is_fallback
             }
         }
@@ -295,24 +341,29 @@ def initiate_donation(request):
     try:
         # Step 1: Handle Mobile Money (Dynamic Conversion)
         if method in ['mpesa', 'mobile_money']:
-            conv = CurrencyService.convert_to_local(amount, phone)
+            conv = CurrencyService.convert_to_local(float(amount_decimal), phone)
+            donation.currency = conv['currency']
+            donation.save(update_fields=['currency'])
             response = initialize_transaction(conv['currency'], conv['amount'], ["mobile_money", "card"])
         
         # Step 2: Handle Cards/Bank/QR (USD First with KES Fallback)
         else:
-            response = initialize_transaction("USD", int(amount * 100), ["card", "bank", "ussd", "qr"])
+            usd_minor_units = int((amount_decimal * Decimal('100')).quantize(Decimal('1'), rounding=ROUND_HALF_UP))
+            response = initialize_transaction("USD", usd_minor_units, ["card", "bank", "ussd", "qr"])
             res_data = response.json()
             
             # If USD is not yet supported by merchant, fallback to KES
             if not res_data.get('status') and "Currency not supported" in res_data.get('message', ''):
-                conv_kes = CurrencyService.convert_to_local(amount, "254") # Default KES fallback
+                conv_kes = CurrencyService.convert_to_local(float(amount_decimal), "254") # Default KES fallback
+                donation.currency = conv_kes['currency']
+                donation.save(update_fields=['currency'])
                 response = initialize_transaction("KES", conv_kes['amount'], ["card", "bank", "ussd", "qr"], is_fallback=True)
 
         res_data = response.json()
 
         if res_data.get('status'):
             donation.provider_reference = res_data['data']['reference']
-            donation.save()
+            donation.save(update_fields=['provider_reference'])
             return Response({
                 'donation_id': donation.id,
                 'checkout_url': res_data['data']['authorization_url']
@@ -321,6 +372,7 @@ def initiate_donation(request):
             return Response({'error': res_data.get('message', 'Initialization Failed')}, status=status.HTTP_400_BAD_REQUEST)
 
     except Exception as e:
+        logger.error(f"Error initiating Paystack donation: {e}")
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])

@@ -38,7 +38,7 @@ urlpatterns = [
     path('settings/', SettingsListView.as_view(), name='settings-list'),
     path('ai/chat/', ai_chat, name='ai-chat'),
     path('webhooks/paystack/', paystack_webhook, name='paystack-webhook'),
-    
+
     # Admin endpoints
     path('admin/login/', admin_login, name='admin-login'),
     path('admin/logout/', knox_views.LogoutView.as_view(), name='knox-logout'),

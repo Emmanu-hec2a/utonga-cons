@@ -242,3 +242,23 @@ class PaystackIntegrationTests(TestCase):
 
         self.campaign.refresh_from_db()
         self.assertEqual(self.campaign.raised_usd, Decimal('10.00'))
+
+    def test_download_certificate_generates_pdf_with_signatures_and_calligraphy(self):
+        donation = Donation.objects.create(
+            amount=Decimal('50.00'),
+            currency='USD',
+            method='card',
+            provider='paystack',
+            donor_email='visitor@example.com',
+            donor_name='Jane Visitor Doe',
+            status='completed'
+        )
+
+        response = self.client.get(f'/api/donations/{donation.id}/certificate/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/pdf')
+        
+        pdf_content = b"".join(response.streaming_content) if response.streaming_content else response.content
+        self.assertTrue(pdf_content.startswith(b'%PDF'))
+        # Check that PDF includes font descriptor for calligraphic GreatVibes font
+        self.assertIn(b'GreatVibes', pdf_content)

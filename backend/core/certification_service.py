@@ -1,14 +1,26 @@
 import os
 import io
+import logging
 import qrcode
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib import colors
-from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from django.conf import settings
 from django.utils import timezone
+
+logger = logging.getLogger(__name__)
+
+# Try registering GreatVibes calligraphic font if available
+CALLIGRAPHY_FONT = "Times-BoldItalic"
+font_path = os.path.join(settings.BASE_DIR, 'core', 'assets', 'fonts', 'GreatVibes.ttf')
+if os.path.exists(font_path):
+    try:
+        pdfmetrics.registerFont(TTFont('GreatVibes', font_path))
+        CALLIGRAPHY_FONT = 'GreatVibes'
+    except Exception as e:
+        logger.warning(f"Failed to register GreatVibes font: {e}")
 
 class CertificationService:
     @staticmethod
@@ -45,55 +57,67 @@ class CertificationService:
 
         # --- Body ---
         c.setFont("Helvetica-Oblique", 18)
-        c.drawCentredString(width / 2, height - 240, "This is to certify that")
+        c.drawCentredString(width / 2, height - 230, "This is to certify that")
         
-        # Donor Name (Large & Bold with Dynamic Sizing to prevent breaking)
-        donor_name = str(donation.donor_name).upper()
-        name_font_size = 48
-        if len(donor_name) > 20: name_font_size = 36
-        if len(donor_name) > 30: name_font_size = 28
+        # Donor / Visitor Name (Calligraphic Script Font)
+        # Convert donor name to title case for beautiful calligraphy rendering
+        raw_name = str(donation.donor_name).strip()
+        donor_name = raw_name.title() if raw_name else "Valued Sanctuary Steward"
         
-        c.setFont("Helvetica-Bold", name_font_size)
+        name_font_size = 54
+        if len(donor_name) > 22: name_font_size = 42
+        if len(donor_name) > 32: name_font_size = 32
+        
+        c.setFont(CALLIGRAPHY_FONT, name_font_size)
         c.setFillColor(colors.HexColor("#1A1A1A"))
-        c.drawCentredString(width / 2, height - 300, donor_name)
+        c.drawCentredString(width / 2, height - 295, donor_name)
         
-        c.setFont("Helvetica", 18)
+        c.setFont("Helvetica", 16)
         c.setFillColor(colors.black)
-        c.drawCentredString(width / 2, height - 360, f"has successfully contributed to the restoration of Utonga Sanctuary by planting")
+        c.drawCentredString(width / 2, height - 355, "has successfully contributed to the restoration of Utonga Sanctuary by planting")
         
         c.setFont("Helvetica-Bold", 24)
         c.setFillColor(colors.HexColor("#4A5D23"))
-        # Ensure tree_count is handled as a safe integer for rendering
         try:
             tree_count = int(float(donation.amount))
         except (ValueError, TypeError):
             tree_count = 0
             
-        c.drawCentredString(width / 2, height - 400, f"{tree_count} INDIGENOUS { 'TREE' if tree_count == 1 else 'TREES' }")
+        c.drawCentredString(width / 2, height - 395, f"{tree_count} INDIGENOUS { 'TREE' if tree_count == 1 else 'TREES' }")
 
-        c.setFont("Helvetica", 14)
+        c.setFont("Helvetica", 13)
         c.setFillColor(colors.gray)
-        # Handle timestamp safely if it exists
         issue_date = donation.created_at.strftime('%B %d, %Y') if hasattr(donation, 'created_at') and donation.created_at else timezone.now().strftime('%B %d, %Y')
-        c.drawCentredString(width / 2, height - 440, f"Issued on this day, {issue_date}")
+        c.drawCentredString(width / 2, height - 435, f"Issued on this day, {issue_date}")
 
         # --- Signatures ---
-        # Left Signature (Scripted Look)
+        # Left Signature: Chairperson
         c.setStrokeColor(colors.black)
         c.setLineWidth(1)
-        c.line(150, 100, 350, 100)
-        c.setFont("Times-BoldItalic", 20)
+        c.line(130, 100, 330, 100)
+        c.setFont(CALLIGRAPHY_FONT, 26)
         c.setFillColor(colors.black)
-        c.drawCentredString(250, 115, "E. Odongo")
-        c.setFont("Helvetica", 10)
-        c.drawCentredString(250, 85, "Director of Conservation")
+        c.drawCentredString(230, 112, "J. Ongolo")
+        
+        c.setFont("Helvetica-Bold", 10)
+        c.drawCentredString(230, 84, "MR. JOSEPH ONGOLO")
+        c.setFont("Helvetica-Bold", 9)
+        c.setFillColor(colors.HexColor("#4A5D23"))
+        c.drawCentredString(230, 71, "CHAIRPERSON")
 
-        # Right Signature
-        c.line(width - 350, 100, width - 150, 100)
-        c.setFont("Times-BoldItalic", 20)
-        c.drawCentredString(width - 250, 115, "J. Okello")
-        c.setFont("Helvetica", 10)
-        c.drawCentredString(width - 250, 85, "Sanctuary Operations")
+        # Right Signature: Treasurer
+        c.setStrokeColor(colors.black)
+        c.setLineWidth(1)
+        c.line(width - 330, 100, width - 130, 100)
+        c.setFont(CALLIGRAPHY_FONT, 26)
+        c.setFillColor(colors.black)
+        c.drawCentredString(width - 230, 112, "E. Flyckt")
+        
+        c.setFont("Helvetica-Bold", 10)
+        c.drawCentredString(width - 230, 84, "MS. EUNICE FLYCKT")
+        c.setFont("Helvetica-Bold", 9)
+        c.setFillColor(colors.HexColor("#4A5D23"))
+        c.drawCentredString(width - 230, 71, "TREASURER")
 
         # --- QR Verification ---
         qr_data = f"{getattr(settings, 'UTONGA_PRIMARY_DOMAIN', 'https://utonga.org')}/verify/{donation.id}"
@@ -102,16 +126,16 @@ class CertificationService:
         qr.make(fit=True)
         qr_img = qr.make_image(fill_color="black", back_color="white")
         
-        # Convert QR to reportlab image
         qr_buffer = io.BytesIO()
         qr_img.save(qr_buffer, format='PNG')
         qr_buffer.seek(0)
         
         from reportlab.lib.utils import ImageReader
-        c.drawImage(ImageReader(qr_buffer), (width/2) - 30, 60, width=60, height=60)
+        c.drawImage(ImageReader(qr_buffer), (width/2) - 25, 55, width=50, height=50)
         
         c.setFont("Helvetica", 8)
-        c.drawCentredString(width/2, 50, f"Sanctuary ID: UTG-{donation.id}-{int(donation.created_at.timestamp())}")
+        c.setFillColor(colors.gray)
+        c.drawCentredString(width/2, 42, f"Sanctuary ID: UTG-{donation.id}-{int(donation.created_at.timestamp() if hasattr(donation, 'created_at') and donation.created_at else timezone.now().timestamp())}")
 
         c.showPage()
         c.save()

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CreditCard, Smartphone, Building, QrCode, CheckCircle, ArrowLeft, ArrowRight, Loader2, Download, Share2, Heart, Trees } from 'lucide-react';
+import { CreditCard, Smartphone, Building, QrCode, CheckCircle, XCircle, ArrowLeft, ArrowRight, Loader2, Download, Share2, Heart, Trees, Globe, ShieldCheck } from 'lucide-react';
 import { useSearchParams, Link } from 'react-router-dom';
 import PhoneInputPkg from 'react-phone-input-2';
 const PhoneInput = PhoneInputPkg.default || PhoneInputPkg;
@@ -66,6 +66,12 @@ const DonationFlow = () => {
         setDonationResult(safeData);
         setAmount(safeData.amount);
         setStep(4);
+      } else if (res.data.status === 'failed') {
+        setDonationResult(prev => ({
+          ...prev,
+          status: 'failed',
+          is_waiting: false
+        }));
       }
       return res.data.status;
     } catch (err) {
@@ -82,7 +88,7 @@ const DonationFlow = () => {
       const pollingId = String(donationResult.id);
       interval = setInterval(async () => {
         const currentStatus = await fetchLiveDonationStatus(pollingId);
-        if (currentStatus === 'completed') {
+        if (currentStatus === 'completed' || currentStatus === 'failed') {
           clearInterval(interval);
         }
       }, 3000);
@@ -194,34 +200,97 @@ const DonationFlow = () => {
         );
       case 2:
         return (
-          <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
             <button onClick={handleBack} className="text-gray-500 flex items-center hover:text-white transition-colors font-bold text-sm">
               <ArrowLeft size={18} className="mr-2" /> Back
             </button>
-            <h2 className="text-3xl font-bold tracking-tight">Select payment method</h2>
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight">Select payment method</h2>
+              <p className="text-gray-400 text-xs mt-1">Choose how you would like to complete your donation</p>
+            </div>
+
+            {/* Group 1: Global Payments */}
             <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase tracking-widest font-black text-utonga-accent flex items-center gap-1.5">
+                  <Globe size={12} /> Global Payments (USD $)
+                </span>
+                <span className="text-[10px] bg-utonga-accent/10 text-utonga-accent px-2 py-0.5 rounded-md font-bold">
+                  Worldwide
+                </span>
+              </div>
+
+              <button
+                onClick={() => setMethod('card')}
+                className={`flex flex-col w-full p-4.5 rounded-2xl border transition-all duration-300 text-left ${method === 'card' ? 'border-utonga-accent bg-utonga-accent/5' : 'border-white/[0.05] hover:border-white/20 bg-white/[0.02]'}`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center">
+                    <div className={`rounded-xl mr-4 bg-white/[0.05] backdrop-blur-md flex items-center justify-center w-12 h-12 border border-white/[0.05] transition-all duration-300 ${method === 'card' ? 'text-utonga-accent border-utonga-accent/30 shadow-[0_0_15px_rgba(255,215,0,0.2)]' : 'text-gray-500'}`}>
+                      <CreditCard size={24} />
+                    </div>
+                    <div>
+                      <div className={`font-bold tracking-wide transition-colors text-base ${method === 'card' ? 'text-white' : 'text-gray-300'}`}>
+                        Credit / Debit Card
+                      </div>
+                      <div className="text-xs text-gray-500 font-medium">Visa, Mastercard, Amex, International Cards</div>
+                    </div>
+                  </div>
+                  <span className="text-xs text-utonga-accent font-bold bg-white/[0.03] px-2.5 py-1 rounded-full border border-white/[0.05]">
+                    USD ($)
+                  </span>
+                </div>
+
+                {method === 'card' && (
+                  <div className="mt-3 pt-3 border-t border-utonga-accent/15 text-xs text-gray-300 leading-relaxed flex items-start gap-2.5">
+                    <ShieldCheck size={16} className="text-utonga-accent shrink-0 mt-0.5" />
+                    <span>International cards may require approval via your mobile banking app or 3D Secure verification.</span>
+                  </div>
+                )}
+              </button>
+            </div>
+
+            {/* Group 2: Local & Regional Payments */}
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase tracking-widest font-black text-gray-400 flex items-center gap-1.5">
+                  <Smartphone size={12} /> Local & Regional Payments (KES)
+                </span>
+                <span className="text-[10px] bg-white/[0.05] text-gray-400 px-2 py-0.5 rounded-md font-bold">
+                  East Africa
+                </span>
+              </div>
+
               {[
-                { id: 'card', name: 'Credit / Debit Card', icon: <CreditCard size={24} /> },
-                { id: 'mpesa', name: 'Mobile Money (M-Pesa/Airtel/MTN)', icon: <Smartphone size={24} /> },
-                { id: 'bank', name: 'Bank Transfer', icon: <Building size={24} /> },
-                { id: 'qr', name: 'Scan QR Code', icon: <QrCode size={24} /> },
+                { id: 'mpesa', name: 'Mobile Money (M-Pesa / Airtel)', desc: 'Instant PIN prompt sent to your mobile phone', icon: <Smartphone size={22} /> },
+                { id: 'bank', name: 'Local Bank Transfer', desc: 'Direct transfer from local bank account', icon: <Building size={22} /> },
+                { id: 'qr', name: 'Scan QR Code', desc: 'Pay using local banking app QR scanner', icon: <QrCode size={22} /> },
               ].map(m => (
                 <button
                   key={m.id}
                   onClick={() => setMethod(m.id)}
-                  className={`flex items-center w-full p-4 rounded-2xl border transition-all duration-300 ${method === m.id ? 'border-utonga-accent bg-utonga-accent/5' : 'border-white/[0.05] hover:border-white/20 bg-white/[0.02]'}`}
+                  className={`flex items-center justify-between w-full p-4 rounded-2xl border transition-all duration-300 text-left ${method === m.id ? 'border-utonga-accent bg-utonga-accent/5' : 'border-white/[0.05] hover:border-white/20 bg-white/[0.02]'}`}
                 >
-                  <div className={`rounded-xl mr-5 bg-white/[0.05] backdrop-blur-md flex items-center justify-center w-12 h-12 border border-white/[0.05] transition-all duration-300 ${method === m.id ? 'text-utonga-accent border-utonga-accent/30 shadow-[0_0_15px_rgba(255,215,0,0.2)]' : 'text-gray-500'}`}>
-                    {m.icon}
+                  <div className="flex items-center">
+                    <div className={`rounded-xl mr-4 bg-white/[0.05] backdrop-blur-md flex items-center justify-center w-11 h-11 border border-white/[0.05] transition-all duration-300 ${method === m.id ? 'text-utonga-accent border-utonga-accent/30 shadow-[0_0_15px_rgba(255,215,0,0.2)]' : 'text-gray-500'}`}>
+                      {m.icon}
+                    </div>
+                    <div>
+                      <div className={`font-bold tracking-wide transition-colors text-sm ${method === m.id ? 'text-white' : 'text-gray-300'}`}>{m.name}</div>
+                      <div className="text-xs text-gray-500 font-medium">{m.desc}</div>
+                    </div>
                   </div>
-                  <span className={`font-bold tracking-wide transition-colors text-base ${method === m.id ? 'text-white' : 'text-gray-400'}`}>{m.name}</span>
+                  <span className="text-[10px] text-gray-400 font-bold bg-white/[0.03] px-2 py-1 rounded-md border border-white/[0.05]">
+                    KES
+                  </span>
                 </button>
               ))}
             </div>
+
             <button
               disabled={!method}
               onClick={handleNext}
-              className="w-full bg-utonga-green py-5 rounded-[2rem] font-black text-lg disabled:opacity-30 transition-all"
+              className="w-full bg-utonga-green py-5 rounded-[2rem] font-black text-lg disabled:opacity-30 transition-all shadow-xl shadow-utonga-green/20"
             >
               Continue
             </button>
@@ -268,6 +337,16 @@ const DonationFlow = () => {
               </div>
             </div>
 
+            {method === 'card' && (
+              <div className="bg-utonga-accent/5 border border-utonga-accent/20 rounded-2xl p-4 text-xs text-gray-300 leading-relaxed flex items-start gap-3">
+                <Globe size={20} className="text-utonga-accent shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-utonga-accent font-bold block mb-1">Donating from outside Africa?</span>
+                  Your card issuer may require a quick approval notification inside your mobile banking app or SMS code to complete this secure international transaction.
+                </div>
+              </div>
+            )}
+
             <button
               disabled={isSubmitting || !details.name || !details.email}
               onClick={initiateDonation}
@@ -297,6 +376,31 @@ const DonationFlow = () => {
             <div className="text-center py-24">
               <Loader2 className="animate-spin mx-auto text-utonga-accent" size={48} />
               <p className="mt-4 text-white">Initializing secure session...</p>
+            </div>
+          );
+        }
+
+        if (donationResult?.status === 'failed') {
+          return (
+            <div className="text-center py-16 space-y-6 animate-in fade-in zoom-in duration-700">
+              <div className="w-16 h-16 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center mx-auto border border-red-500/20">
+                <XCircle size={32} />
+              </div>
+              <h2 className="text-3xl font-bold text-white">Payment Declined or Cancelled</h2>
+              <p className="text-gray-400 max-w-md mx-auto text-sm leading-relaxed">
+                The payment attempt was declined by the bank or cancelled. If paying with an international card, please verify that 3D Secure or international transactions are enabled with your bank.
+              </p>
+              <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  onClick={() => {
+                    setDonationResult(null);
+                    setStep(1);
+                  }}
+                  className="bg-utonga-green text-white px-8 py-3.5 rounded-2xl font-black hover:bg-opacity-90 transition-all"
+                >
+                  Try Again / Choose Another Method
+                </button>
+              </div>
             </div>
           );
         }

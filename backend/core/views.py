@@ -249,22 +249,30 @@ def get_donation_status(request, donation_id):
                 timeout=5
             )
             res_data = response.json()
-            if res_data.get('status') and res_data.get('data', {}).get('status') == 'success':
-                payment_data = res_data['data']
+            if res_data.get('status'):
+                paystack_status = res_data.get('data', {}).get('status')
+                payment_data = res_data.get('data', {})
                 paid_currency = payment_data.get('currency')
 
-                with transaction.atomic():
-                    donation.refresh_from_db()
-                    if donation.status != 'completed':
-                        donation.status = 'completed'
-                        if paid_currency:
-                            donation.currency = paid_currency
-                        donation.save()
-                        try:
-                            from .tasks import send_receipt_email
-                            send_receipt_email.delay(donation.id)
-                        except Exception as e:
-                            logger.error(f"Failed to trigger receipt email during auto-verify for donation {donation.id}: {e}")
+                if paystack_status == 'success':
+                    with transaction.atomic():
+                        donation.refresh_from_db()
+                        if donation.status != 'completed':
+                            donation.status = 'completed'
+                            if paid_currency:
+                                donation.currency = paid_currency
+                            donation.save()
+                            try:
+                                from .tasks import send_receipt_email
+                                send_receipt_email.delay(donation.id)
+                            except Exception as e:
+                                logger.error(f"Failed to trigger receipt email during auto-verify for donation {donation.id}: {e}")
+                elif paystack_status in ['failed', 'abandoned']:
+                    with transaction.atomic():
+                        donation.refresh_from_db()
+                        if donation.status == 'pending':
+                            donation.status = 'failed'
+                            donation.save(update_fields=['status'])
         except Exception as e:
             logger.warning(f"Auto-verification check failed for donation {donation_id}: {e}")
 
